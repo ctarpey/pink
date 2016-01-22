@@ -13,12 +13,19 @@ setwd("G:/Analysis/Mapping/AllHaps/Centromeres" )
 rm(list=ls())
 
 ##Read in map with phased genotypes:
-Map <- as.matrix(read.csv(file = 'centmapping_01.txt', sep = '\t')) #Read map with imputated genotypes for missing values at first and last markers on each LG
+
+#Map <- as.matrix(read.csv(file = 'Cents_05.txt', sep = '\t')) #Read map with imputated genotypes for missing values at first and last markers on each LG
+#Map <- as.matrix(read.csv(file = 'Cents_01.txt', sep = '\t')) #Read map with imputated genotypes for missing values at first and last markers on each LG
+Map <- as.matrix(read.csv(file = 'Cents_110.txt', sep = '\t')) #Read map with imputated genotypes for missing values at first and last markers on each LG
+#Map <- as.matrix(read.csv(file = 'Cents_108.txt', sep = '\t')) #Read map with imputated genotypes for missing values at first and last markers on each LG
+
 is.matrix(Map)
 rownames(Map) <- Map[,1]                #Change column 1 into rownames
 Map <- Map[,2:ncol(Map)] #Should go in function                
 RowNum<-dim(Map)[1]
 FamSize<-RowNum-5
+
+FamSize
 
 plot.pseudo.y <- function(LG, plot){
   #Making subset matrix for LG_X:
@@ -199,8 +206,37 @@ plot.pseudo.y <- function(LG, plot){
 
 
 #PLOT LINKAGE GROUPS BY NAME, MUST HAVE SAME NAME AS INPUT FILE
+
+pdf(file = "G:/Analysis/Mapping/AllHaps/Centromeres/plots/Bird13_110")
+
 plot.pseudo.y(LG="1", plot="Y")
+plot.pseudo.y(LG="2", plot="Y")
+plot.pseudo.y(LG="3", plot="Y")
+plot.pseudo.y(LG="4", plot="Y")
+plot.pseudo.y(LG="5", plot="Y")
+plot.pseudo.y(LG="6", plot="Y")
+plot.pseudo.y(LG="7", plot="Y")
+plot.pseudo.y(LG="8", plot="Y")
+plot.pseudo.y(LG="9", plot="Y")
+plot.pseudo.y(LG="10", plot="Y")
+plot.pseudo.y(LG="11", plot="Y")
+plot.pseudo.y(LG="12", plot="Y")
+plot.pseudo.y(LG="13", plot="Y")
+plot.pseudo.y(LG="14", plot="Y")
+plot.pseudo.y(LG="15", plot="Y")
+plot.pseudo.y(LG="16", plot="Y")
+plot.pseudo.y(LG="17", plot="Y")
+plot.pseudo.y(LG="18", plot="Y")
 plot.pseudo.y(LG="19", plot="Y")
+plot.pseudo.y(LG="20", plot="Y")
+plot.pseudo.y(LG="21", plot="Y")
+plot.pseudo.y(LG="22", plot="Y")
+plot.pseudo.y(LG="23", plot="Y")
+plot.pseudo.y(LG="24", plot="Y")
+plot.pseudo.y(LG="25", plot="Y")
+plot.pseudo.y(LG="26", plot="Y")
+
+dev.off()
 
 ##############################################################################################
 #######END HERE
