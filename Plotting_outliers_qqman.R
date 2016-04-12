@@ -1,6 +1,6 @@
 ### Manhattan plots of Outliers from LFMM and Arlequin
 ###    using this link: http://www.gettinggeneticsdone.com/2014/05/qqman-r-package-for-qq-and-manhattan-plots-for-gwas-results.html
-### Carolyn Tarpey | April 2106
+### Carolyn Tarpey | April 2016
 ### ---------------------------------------
 
 #install.packages("qqman")
