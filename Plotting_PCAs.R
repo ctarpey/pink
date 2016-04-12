@@ -49,7 +49,7 @@ cols_OddEven <-c(AMUR10 = "#EE547D", AMUR11 = "#4E70C8", HAYLY09 = "#4C7DE7", HA
 ###@@@@@@@@@@@@@@@@@@@@@@dimmension one and two
 
 ###ALL 
-pdf("G:/Analysis/Pop_analysis/Populations_b3_may/PCA_R_images_plink/PDF of updated PCA plots.pdf", width = 9, height = 7)
+pdf("G:/Analysis/Pop_analysis/Populations_b3_may/PCA_R_images_plink/PDF of updated PCA plots_3.pdf", width = 9, height = 7)
 
 ggplot(data = ALL_tt) + geom_point(aes(x = V3, y = V4,  color = POPNAME), alpha = .8, size = 4) + 
   scale_colour_manual(values = cols_OddEven, name ="Population") +  
@@ -238,7 +238,7 @@ ggplot(data = Asia_tt) + geom_point(aes(x = V5, y = V6, color = POPNAME), alpha 
   scale_x_continuous(trans="reverse") + scale_y_continuous(trans="reverse") +
   theme_classic() + theme(text = element_text(size= 20), legend.title = element_blank(),
                           axis.line.x = element_line(), axis.line.y = element_line()) +
-  labs(list( x = "Dimension 3 (6.04%)", y = "Dimension 4 (3.40%)", size = 30))
+  labs(list(title= "Asia Dimensions 3 & 4", x = "Dimension 3 (6.04%)", y = "Dimension 4 (3.40%)", size = 30))
 
 ###NorthAmerica_tt
 
