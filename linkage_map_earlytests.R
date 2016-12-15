@@ -1,6 +1,6 @@
 ### Plotting the Linkage map from LepMap
 ###    all families together, several different runs
-### Carolyn Tarpey | August 2015 
+### Carolyn Tarpey | August 2015 last updated 1/24/2016
 ### ---------------------------------------
 
 
@@ -20,9 +20,9 @@ library(plyr)
 
 library(ggplot2)
 
-collapsed <- 'G:/Analysis/Mapping/AllHaps/LepMap/ReOrder_LG17_LOD17_MAP.txt'
+collapsed <- 'G:/Analysis/Mapping/AllHaps/LepMap/building/ReOrder_LG17_LOD17_MAP.txt'
 
-LINKAGEmap <-"G:\\Analysis\\Mapping\\AllHaps\\LepMap\\LinkageMap.txt"
+LINKAGEmap <-"G:\\Analysis\\Mapping\\AllHaps\\LepMap\\building\\LinkageMap.txt"
 
 
 plot_LG_hist <- function(path_to_LEPmap_chr_file){
@@ -52,12 +52,12 @@ dup_color <-c(yes = "#000f2d", no = "#ffd9f2")
 
 
 
-map_positions <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\MAP.txt", sep = "\t", header = TRUE)
-duplicates <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\MAPdups.txt", sep = "\t", header = TRUE)
+map_positions <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\building\\MAP.txt", sep = "\t", header = TRUE)
+duplicates <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\building\\MAPdups.txt", sep = "\t", header = TRUE)
 
-map_positions_n13 <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\MAPreLG13.txt", sep = "\t", header = TRUE)
-duplicates_n13 <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\MAPreLG13dups.txt", sep = "\t", header = TRUE)
-nonduplicates_n13 <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\MAPreLG13NONdups.txt", sep = "\t", header = TRUE)
+map_positions_n13 <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\building\\MAPreLG13.txt", sep = "\t", header = TRUE)
+duplicates_n13 <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\building\\MAPreLG13dups.txt", sep = "\t", header = TRUE)
+nonduplicates_n13 <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\building\\MAPreLG13NONdups.txt", sep = "\t", header = TRUE)
 
 ggplot(data = map_positions) + geom_point(aes(x = LG, y = position, color = paralog), alpha = .5, size = 4, color = "blue") 
 ggplot(data = map_positions) + geom_point(aes(x = LG, y = position, color = paralog), alpha = .5, size = 4) + scale_colour_manual(values = dup_color)
@@ -86,8 +86,8 @@ ggplot(data = duplicates) + geom_jitter(aes(x = LG, y = position), alpha = .5, s
 #XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX LOD 16XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ####################################################################################
 
-MAP_lg13_ydups_n24_ndupunsLOD16 <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\MAP_lg13_ydups_n24_ndupunsLOD16.txt", sep = "\t", header = TRUE)
-MAP_lg13_ydups_n24_LOD16 <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\MAP_lg13_ydups_n24_LOD16.txt", sep = "\t", header = TRUE)
+MAP_lg13_ydups_n24_ndupunsLOD16 <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\building\\MAP_lg13_ydups_n24_ndupunsLOD16.txt", sep = "\t", header = TRUE)
+MAP_lg13_ydups_n24_LOD16 <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LepMap\\building\\MAP_lg13_ydups_n24_LOD16.txt", sep = "\t", header = TRUE)
 
 
 color <-c(yes = "limegreen", no = "mediumslateblue")
@@ -95,10 +95,6 @@ ggplot(data = MAP_lg13_ydups_n24_ndupunsLOD16) + geom_point(aes(x = LG, y = posi
 
 color <-c(yes = "limegreen", no = "mediumslateblue")
 ggplot(data = MAP_lg13_ydups_n24_LOD16) + geom_point(aes(x = LG, y = position, color = paralog), alpha = .5, size = 3) + scale_colour_manual(values = color)+ theme_classic()
-
-
-
-
 
 
 

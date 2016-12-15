@@ -9,10 +9,10 @@ par()  ##view default par settings
 opar<-par()   ##save a copy of default par settings so that I can revert back to them while plotting
 
 # Import Fst values and save values for each pop (example of full code)
-Fst_mapped <-read.table("Outliers_Master.txt", header=TRUE) ##This file has cumulative map positions
+Fst_mapped <-read.table("Outliers_Master_update.txt", header=TRUE) ##This file has cumulative map positions
 head(Fst_mapped)
 
-#Colored boxes for even chromosomes
+#Colored boxes for even numbered chromosomes
 box_starts<-c(125.18, 374.86, 610.3, 836.07, 1074.26, 1303.02, 1522.59, 1765.54, 1996.05, 2247.89, 2463.55, 2692.96, 2922.46)
 box_ends<-c(251.86, 495.05, 728.59, 952.17, 1189.4, 1411.97, 1642.5, 1893.93, 2123.51, 2352.32, 2560.11, 2807.45, 3037.61)
 
@@ -30,7 +30,9 @@ LFMM_e_PT2<-Fst_mapped[Fst_mapped$even_PT2=="yes",]
 LFMM_e_LO<-Fst_mapped[Fst_mapped$even_LO=="yes",]
 LFMM_e_LA<-Fst_mapped[Fst_mapped$even_LA=="yes",]
 
+
 LFmm_overlap<-Fst_mapped[Fst_mapped$LFMM_oe_overlap=="yes",] #outlier in any LFMM odd and any LFMM even
+LFmm_any<-Fst_mapped[Fst_mapped$LFMM_oe_any=="yes",] #outlier in any LFMM odd or any LFMM even
 LFMM_PT1<-Fst_mapped[Fst_mapped$overlap_PT1=="yes",]  # PT1 outlier in both odd and even 
 LFMM_PT2<-Fst_mapped[Fst_mapped$overlap_PT2=="yes",]
 LFMM_LO<-Fst_mapped[Fst_mapped$overlap_LO=="yes",]
@@ -57,8 +59,6 @@ par(opar) #option to restore default settings
 #                 NOME91 = "#95E0CA", NOME94 = "#E63D25", SNOH03 = "#708FEC", SNOH96 ="#a12787" , TAUY09 = "#3C92A8", TAUY12 = "#DF9E39")
 
 
-
-
 ######################### Overlap in Arlequin
 
 pdf("Plots/Arlequin Overlap.pdf", width = 12, height = 8)
@@ -74,7 +74,7 @@ dev.off()
 
 ######################### Overlap in any LFMM odd and even
 
-pdf("Plots/Overlap LFMM any odd any even.pdf", width = 12, height = 8)
+pdf("Plots/Overlap LFMM any odd any even_new.pdf", width = 12, height = 8)
 
 plot(Fst_mapped$BP_seq,Fst_mapped$global_Fst,ylim=c(-0.02,0.9),type="n",col="gray",ylab= "Global Fst", xlab="Cumulative Map Position (cM)",cex.axis=1.5,cex.lab=1.5)
 abline(h=0)

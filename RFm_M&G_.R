@@ -6,6 +6,36 @@
 ### ---------------------------------------
 
 
+###########################################################################
+####### There is an issue with getting LG 1 to plot in most families#######
+###########################################################################
+
+
+#MAKE THESE CHANGES TO PLOT THE LG1: for Hood 11 _05 it needs the right cent flank choose 2
+# for Hood 11_01 it needs both the right and left cent flank choose 2
+# for Bird13_108 it nees only the the right cent flank choose 2
+# for bird13_110 it seems to work with the right and left choose left off but failed for a lot of the other lgs. 
+# 
+# #
+# LeftCentValues<-mapply("-",CentLimit,leftValues)
+# LeftCentFlank<-which(diff(sign(LeftCentValues))!=0)
+# 
+# # RW 1-12                             #edit to make it work with LG 1
+# print(LeftCentFlank)
+# LeftCentFlank <- LeftCentFlank[[2]]
+# print(LeftCentFlank)
+# 
+# LeftCentStart<-LeftCentFlank+1
+# 
+# 
+# Or else you will get this error: 
+# 
+# [1] 175
+# Error in RightCentFlank[[2]] : subscript out of bounds
+# In addition: There were 50 or more warnings (use warnings() to see the first 50)
+# 
+#I ended up plotting LG 1 separate for each family and merging the PDFs to the other LGs. 
+
 
 setwd("G:/Analysis/Mapping/AllHaps/Centromeres" )
 

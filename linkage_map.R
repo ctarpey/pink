@@ -8,6 +8,33 @@ library(stringr)
 library(plyr)
 
 
+################################################# Updated plot with new LG from GARRETT
+
+#LINKAGEmap_GU.txt
+
+LinkageMap <- read.table("G:\\Analysis\\Mapping\\AllHaps\\LINKAGEmap_GU.txt", sep = "\t", header = TRUE)
+Lines <- read.table("G:\\Analysis\\Mapping\\AllHaps\\Lines_behind_GU.txt", sep = "\t", header = TRUE)
+Centromeres <- read.table("G:\\Analysis\\Mapping\\AllHaps\\Centromeres_4plots_GU.txt", sep = "\t", header = TRUE)
+
+ASP_color <- c(yes = "#FD3C06", no ="blue")
+
+names(LinkageMap) 
+names(Lines)
+names(Centromeres)
+
+
+ggplot(data = LinkageMap) + geom_segment(data = Lines, mapping= aes(x = x, y = y, xend = xend, yend = yend), size =.5, color = "black") +
+  geom_segment(data = Centromeres, mapping= aes(x = x, y = y, xend = xend, yend = yend), size =4.9, color = "limegreen") +
+  geom_point(aes(x = NewLG, y = LepMap_Position , color = Paralog), alpha = .4, size = 3.5) + scale_colour_manual(values = ASP_color) +
+  scale_x_continuous(breaks=c(2,4,6,8,10,12,14,16,18,20,22,24,26)) + theme_classic() + xlab("Linkage Group") + ylab("Genetic Distance (cM)") +
+  theme(axis.title.x = element_text(color = "black", size = 20), axis.text.x = element_text(vjust = 0.5, size= 14)) +
+  theme(axis.title.y = element_text(color = "black", size = 20), axis.text.y = element_text(vjust = 0.5, size= 14)) +
+  theme(legend.title = element_text(color = "black", size = 16), legend.text = element_text(vjust = 0.5, size= 14))
+
+
+ggsave(filename = "G:\\Analysis\\Mapping\\AllHaps\\LepMap\\PINK_garrett_updated_8x6_sm.pdf", width = 8, height= 6)
+ggsave(filename = "G:\\Analysis\\Mapping\\AllHaps\\LepMap\\PINK_garrett_updated__8x8_sm.pdf", width = 8, height= 8)
+
 ################################################# PLOT FOR ASP TALK NOV 2015
 
 #LinkageMap.txt  this is made with ReOrder_LG17_LOD17_MAP.txt and the # LG24_LG13_ManForceCut_N24D_LD17_MAP.txt file for the rest of the loci.
