@@ -1,5 +1,6 @@
 ### Genotype QC on expanded pink populations 
-###   Testing the loci genotyped the same between previous study and current efforts. 
+###   Testing the loci genotyped the same between previous study and current efforts.
+###   QC individual based PCA plots for each population
 ###  Carolyn Tarpey | Nov 2017
 ### ---------------------------------------
 
