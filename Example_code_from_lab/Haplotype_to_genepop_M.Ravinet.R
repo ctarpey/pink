@@ -3,7 +3,7 @@
 
 rm(list = ls())
 library(stringr)
-source("~/Dropbox/R/mark_source/haplotype_conversion_functions.R")
+#source("~/Dropbox/R/mark_source/haplotype_conversion_functions.R")
 
 ### NB - for now this function works on haplotype file output from POPULATIONS module of the stacks
 ### pipeline
