@@ -50,15 +50,18 @@ dim(indvs_list)
 #get the unique tags for the paralogs  
 paralog_tags<- unique(paralogs_alldata$Tag)
 length(paralog_tags)
+head(paralog_tags)
 
 #get the unique tags for the singletons  
 singletons_tags<- unique(singletons$Tag)
 length(singletons_tags)
+head(singletons_tags)
 
 #get the tags for singletons that are not in the paralog list
 just_singletons_tags<- setdiff(singletons_tags, paralog_tags)
 length(just_singletons_tags)
-
+#xx <- which(just_singletons_tags == "153483")
+#just_singletons_tags[xx] 
 
 ######################## HAPLOTYPE FILTER THE INDIVIDUALS BASED ON 80% genotype rate from SecondPinkFiltering.R
 
@@ -129,13 +132,13 @@ close(outputFile)
 
 ##### GENOTYPE filter the loci for paralogs
 ######################## FILTER THE GENOTYPES BASED ON PARALOG RESULTS
-
 #format dataset to remove X from locus names
 genotype_file_t<-gsub("X","",colnames(genotype_file))
 head(genotype_file_t)
 length(genotype_file_t)
 colnames(genotype_file) <- genotype_file_t
 genotype_file[1:5,1:5]
+dim(genotype_file)
 
 #pull the loci names from the genotype file 
 genotype_loci <- colnames(genotype_file)
@@ -154,7 +157,13 @@ just_singletons_tags <- as.numeric(setdiff(singletons_tags, paralog_tags))
 length(just_singletons_tags)
 head(just_singletons_tags)
 
-singletons_to_keep <- loci_table_t[loci_table_t$Tag%in%just_singletons_tags,]
+xx <- which(loci_table_t$Tag == "44444")
+loci_table_t$Tag[xx]
+
+xx <- which(loci_table_t$Tag == "44444")
+loci_table_t$Tag[xx]
+
+singletons_to_keep <- loci_table_t[which(loci_table_t$Tag%in%just_singletons_tags),]
 dim(singletons_to_keep)
 head(singletons_to_keep)
 

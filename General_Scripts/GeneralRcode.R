@@ -85,6 +85,19 @@ locusGenoRate<-apply(allGenos,2,function(x) 1-(sum(x=="0000")/dim(allGenos)[1]))
 
 
 
+###@@@@@@@@@@@@@@@@@@@@@@Plots for the Manuscript, have labels as Principal components
+ALL_col<- c("#cd5490","#cd5490","#c9cf4a","#c9cf4a","#7297ee","#7297ee","#61005e","#61005e", "#677f3e","#677f3e","#00158a","#00158a","#e0957e","#e0957e")
 
+###ALL 
+pdf("G:/Analysis/Pop_analysis/Populations_b3_may/PCA_R_images_plink/Updated PCA plots_4manuscript.pdf", width = 9, height = 7)
 
+ggplot(data = ALL_geo) + geom_point(aes(x = V3, y = V4,  color = POPNAME, shape = LINEAGE), alpha = .8, size = 4) + 
+  scale_colour_manual(values = ALL_col, name ="Population", labels = c("Amur even", "Amur odd",
+                                                                       "Kamchatka odd", "Kamchatka even", "Prince William Sound odd", "Prince William Sound even", "Hokkaido even",
+                                                                       "Hokkaido odd", "Norton Sound odd", "Norton Sound even", "Puget Sound odd", "Puget Sound even", "Magadan odd","Magadan even")) +  
+  scale_x_continuous(trans="reverse") + scale_y_continuous(trans="reverse") +
+  theme_classic() + theme(text = element_text(size= 20), legend.title = element_blank(),legend.text = element_text(size= 17),
+                          axis.line.x = element_line(), axis.line.y = element_line()) +
+  labs(list(title= "All Populations Principal Components 1 & 2", x = "Principal Component 1 (30.24%)", y = "Principal Component 2 (13.83%)", size = 30))
 
+dev.off()
