@@ -98,6 +98,9 @@ plot(rep(1,16),col=Histo_16_colors,pch=19,cex=7)
 Blue_pink_6 <- c("Even"="#000080", "Odd"="#FF00FF", "Even_NA"="#AAAAD4", "Even_A"= "#5555AA", "Odd_NA"="#FFAAFF", "Odd_A" = "#FF55FF")
 plot(rep(1,6),col=Blue_pink_6,pch=19,cex=7)
 
+Blue_pink_7 <-c("ALL" = "#8800C3", "Even"="#000080", "Odd"="#FF00FF", "Even_NA"="#AAAAD4", "Even_A"= "#5555AA", "Odd_NA"="#FFAAFF", "Odd_A" = "#FF55FF")
+plot(rep(1,7),col=Blue_pink_7,pch=19,cex=7)
+
 #plot of all the individuals by the 6 groupings
 ggplot(data=Summary_Ped, aes(Summary_Ped$Pop_groups, Summary_Ped$Ind_counts)) + theme_bw() +
   geom_bar(aes(fill= Summary_Ped$Pop_groups),  stat="identity",alpha= .75) + theme(legend.position="none") +
