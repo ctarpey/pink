@@ -801,8 +801,8 @@ dim(NA_ASIA_even_union_FST_sort)
 
 # #### Write a list of the loci that were found in the overlapping set for Evens:
 # ### Change the name to reflect the number choice
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/NA_ASIA_even_union_FST_sort_973.txt", "wb")
-# write.table(NA_ASIA_even_union_FST_sort,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ASIAeven_set", "wb")
+# write.table(ASIAeven_set,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
 # close(outputFile)
 
 ################# ODD
@@ -839,7 +839,6 @@ length(In_NA_ODD_Not_ASIA)
 Intersection_NA_odd_ASIA <- intersect(NAodd_set$Locus, ASIAodd_set$Locus)
 length(Intersection_NA_odd_ASIA)
 
-
 ## make a new dataframe that has the FST info for the overlapping set 
 NA_ASIA_odd_union_FST <- FST_file[FST_file$Locus %in% NA_ASIA_odd_union,]  
 NA_ASIA_odd_union_FST_sort <-NA_ASIA_odd_union_FST[order(NA_ASIA_odd_union_FST$ODD, decreasing = TRUE),]
@@ -848,8 +847,8 @@ dim(NA_ASIA_odd_union_FST_sort)
 
 # #### Write a list of the loci that were found in the overlapping set for Odds:
 # ### Change the name to reflect the number choice
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/NA_ASIA_odd_union_FST_sort_918.txt", "wb")
-# write.table(NA_ASIA_odd_union_FST_sort,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ASIAodd_set.txt", "wb")
+# write.table(ASIAodd_set,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
 # close(outputFile)
 
 #####################################################
