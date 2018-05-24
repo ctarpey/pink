@@ -197,13 +197,15 @@ is.data.frame(Even_filteredHaplotypes)
 ### assign it to haplo below. 
 
 ############################# For the EVEN set  #Uncomment the haplo below to run the Even , and stop at line 
-#haplo <- Even_filteredHaplotypes
+haplo <- Even_filteredHaplotypes
 ############################# For the Odd set
 haplo <- Odd_filteredHaplotypes
-
+haplo[1:5,1:5]
 #test
 #haplo <- Odd_filteredHaplotypes[1:10,]
-
+#looking for a specific haplotype in the haplotype file
+#which(Haplotypes$Catalog_Ids == 12823) #this is the catalog ID #
+#Haplotypes[3806,] #put the row number here and it will output the haplotype for that catalog id
 
 base_set <- c("A", "C", "G", "T")
 KEEP <- vector("list",200000) #these are the snps (tag_position) that are showing <2 of the same variation in the lineage
@@ -216,7 +218,7 @@ for (i in 1:nrow(haplo)) { #for each row in the haplotype file
   row <- as.character(haplo[i,])
   #print(row)
   row_number <- i #this is the row index of the file, not the tag
-  tag <- Haplotypes[i,"Catalog_Ids"] #this pulls the tag number from the original haplotype file #<---Change this back to Haplotypes later
+  tag <- Haplotypes[i,"Catalog_Ids"] #this pulls the tag number from the original haplotype file 
   #tag <- row_number #<-------------------------------------- for the test it just uses the row number of the test file
   #geno_count <- sum(!is.na(row)) #Count the number of genotypes at that tag
   #print(geno_count)
@@ -418,6 +420,7 @@ colnames(Odd_filt_snps)<-"Odd_SNP_Index"
 head(Odd_filt_snps)
 dim(Odd_filt_snps)
 
+
 ## convert the vector of filtered Thrown out SNP indexes to a Data Frame
 Throw_even <-THROW_Even_filt_Hap
 Even_filt_throw_snps <-data.frame(stri_list2matrix(Throw_even, byrow=TRUE))
@@ -440,10 +443,8 @@ Odd_fixxed_snps <-data.frame(stri_list2matrix(FIXXED_odd, byrow=TRUE))
 colnames(Odd_fixxed_snps)<-"Odd_SNP_Index"
 head(Odd_fixxed_snps)
 
-
 ### Find the true SNP position for the variation at each tag. This requires that the SNP_positions_all table be loaded into R, 
 #see very top of code for that loading command
-
 head(SNP_positions_all) 
 dim(SNP_positions_all)
 
@@ -582,6 +583,7 @@ dim(Even_SNPS)
 head(Odd_SNPS)
 dim(Odd_SNPS)
 
+
 ##############Flag TAGS that have a snp with Positions >= 16 and <= 74- we don't want them
 #make a new data frame that has the tag and the flag of whether it fits the criteria of SNPS between 17 and 73
 
@@ -650,6 +652,130 @@ length(which(Odd_Tag_Flags$Odd_SNPs_InRange=="FALSE"))
 # outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_Tag_Flags.txt", "wb")
 # write.table(Odd_Tag_Flags,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
 # close(outputFile)
+
+
+################### This section is similar to the above, but it is just for the benefit of Garrett's primer design pipeline. 
+
+Even_SNPS_PD <- Even_SNPS
+Odd_SNPS_PD <- Odd_SNPS
+
+#add two new empty columns to the end of each data frame for the flags of the left and right limits- needed for Garrett's primer pipeline
+Even_SNPS_PD$LeftLimit<- NA
+Even_SNPS_PD$RightLimit<- NA
+
+Odd_SNPS_PD$LeftLimit <- NA
+Odd_SNPS_PD$RightLimit <- NA
+
+##For loops that look over the snp position for the SNPs that have been identified as variable in the lineage
+# and look at whether the snp is at a position smaller than 17 and flags it 0 is yes, 1 is no
+# Then it looks at whether the snps is at a position that is larger than 73 and flags it 0 is yes, 1 is no
+##This uses the absolute column numbers for indexing position in the dataframe, instead of column names
+#if the column positions change these will be wrong. 
+
+for (r in 1:dim(Even_SNPS_PD)[1]){
+  if (Even_SNPS_PD[r,3] < 17){
+    Even_SNPS_PD[r,11] <- 0
+  } else {
+    Even_SNPS_PD[r,11] <- 1
+  }
+  if (Even_SNPS_PD[r,3] > 73){
+    Even_SNPS_PD[r,12] <- 0
+  } else {
+    Even_SNPS_PD[r,12] <- 1
+  }
+}
+
+for (r in 1:dim(Odd_SNPS_PD)[1]){
+  if (Odd_SNPS_PD[r,3] < 17){
+    Odd_SNPS_PD[r,11] <- 0
+  } else {
+    Odd_SNPS_PD[r,11] <- 1
+  }
+  if (Odd_SNPS_PD[r,3] > 73){
+    Odd_SNPS_PD[r,12] <- 0
+  } else {
+    Odd_SNPS_PD[r,12] <- 1
+  }
+}
+head(Even_SNPS_PD)
+dim(Even_SNPS_PD)
+head(Odd_SNPS_PD)
+dim(Odd_SNPS_PD)
+
+
+####Combine those flags for each SNP into flags for each tag, This is for Garrett's primer design pipeline
+
+##EVEN
+head(Even_SNPS_PD)
+Even_tags_PD <- unique(Even_SNPS_PD$Tag)
+head(Even_tags_PD)
+length(Even_tags_PD)
+
+#create the data frame to put the results into 
+Even_SNPs_InRange_PD <-data.frame(Even_tags_PD)
+Even_SNPs_InRange_PD$LeftLimit <-NA
+Even_SNPs_InRange_PD$RightLimit <-NA
+head(Even_SNPs_InRange_PD)
+
+for (s in 1:length(Even_tags_PD)) {
+  tested_tag <- Even_tags_PD[s]
+  trial_set <- Even_SNPS_PD[which(Even_SNPS_PD$Tag %in% tested_tag),]
+  if (any(trial_set$LeftLimit == 0)){
+    Even_SNPs_InRange_PD$LeftLimit[s]<- 0
+  } else {
+    Even_SNPs_InRange_PD$LeftLimit[s]<- 1
+  }
+  if (any(trial_set$RightLimit == 0)){
+    Even_SNPs_InRange_PD$RightLimit[s]<- 0
+  } else {
+    Even_SNPs_InRange_PD$RightLimit[s]<- 1
+  }
+}
+
+head(Even_SNPs_InRange_PD)
+
+
+#### Write the Even even flags for the primer pipeline:
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_SNPs_InRange_PD.txt", "wb")
+# write.table(Even_SNPs_InRange_PD,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+# close(outputFile)
+
+##EVEN
+head(Odd_SNPS_PD)
+Odd_tags_PD <- unique(Odd_SNPS_PD$Tag)
+head(Odd_tags_PD)
+length(Odd_tags_PD)
+
+#create the data frame to put the results into 
+Odd_SNPs_InRange_PD <-data.frame(Odd_tags_PD)
+Odd_SNPs_InRange_PD$LeftLimit <-NA
+Odd_SNPs_InRange_PD$RightLimit <-NA
+head(Odd_SNPs_InRange_PD)
+
+for (s in 1:length(Odd_tags_PD)) {
+  tested_tag <- Odd_tags_PD[s]
+  trial_set <- Odd_SNPS_PD[which(Odd_SNPS_PD$Tag %in% tested_tag),]
+  if (any(trial_set$LeftLimit == 0)){
+    Odd_SNPs_InRange_PD$LeftLimit[s]<- 0
+  } else {
+    Odd_SNPs_InRange_PD$LeftLimit[s]<- 1
+  }
+  if (any(trial_set$RightLimit == 0)){
+    Odd_SNPs_InRange_PD$RightLimit[s]<- 0
+  } else {
+    Odd_SNPs_InRange_PD$RightLimit[s]<- 1
+  }
+}
+
+head(Odd_SNPs_InRange_PD)
+
+
+### Write the Odd flags for the primer pipeline:
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_SNPs_InRange_PD", "wb")
+write.table(Odd_SNPs_InRange_PD,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
+
+
 
 
 ###################################### Marker selection based on ranked FSt of loci 
@@ -889,6 +1015,21 @@ head(NAeven_top_failed)
 head(ASIAeven_top_failed)
 head(NAodd_top_failed)
 head(ASIAodd_top_failed)
+
+### Export the odd and even lists of top failed loci
+Even_top_failed_tags <- unique(append(NAeven_top_failed$Locus,ASIAeven_top_failed$Locus))
+length(Even_top_failed_tags)
+
+Odd_top_failed_tags <- unique(append(NAodd_top_failed$Locus,ASIAodd_top_failed$Locus))
+length(Odd_top_failed_tags)
+
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_top_failed_tags.txt", "wb")
+# write.table(Odd_top_failed_tags,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+# close(outputFile)
+# 
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_top_failed_tags.txt", "wb")
+# write.table(Even_top_failed_tags,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+# close(outputFile)
 
 
 ################## Make the Master_FST 

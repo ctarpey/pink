@@ -1,13 +1,13 @@
 ### Create 6 lists of which samples to keep for PLINK
 ###    Splits by lineage then by region within lineage
-###    
-### Carolyn Tarpey | May 2018
+###    Plots the differences in the numbers between groups
+### Carolyn Tarpey | May 2018 #updated may 2018 to make sure Lakel07 is even and lakel06 is odd!
 ### ---------------------------------------
 
 #It requires the list of the populations and idividuals that are listed in the PED file of PLINK. I wrote a little python code that takes the first two columns from that file
 # Subset_PED_for_KEEP.py 
 
-install.packages("RColorBrewer")
+#install.packages("RColorBrewer")
 library(ggplot2)
 library(vcfR)
 library(stringr)
@@ -27,12 +27,13 @@ PLINK_PED <-read.delim("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PL
 head(PLINK_PED)
 
 ##### Lists of the populations in each of the 6 groupings: 
-e_list <- c("pop_1", "pop_4", "pop_6", "pop_7", "pop_16", "pop_9", "pop_12", "pop_14")
-o_list <- c("pop_2", "pop_3", "pop_5", "pop_8", "pop_15", "pop_10", "pop_11", "pop_13")
-e_na_list <- c("pop_9", "pop_12", "pop_14")
-e_a_list <- c("pop_1", "pop_4", "pop_6", "pop_7", "pop_16")
-o_na_list <- c("pop_10", "pop_11", "pop_13")
-o_a_list <- c("pop_2", "pop_3", "pop_5", "pop_8", "pop_15")
+e_list <- c("pop_1", "pop_4", "pop_7", "pop_12", "pop_16", "pop_6", "pop_10", "pop_14")
+o_list <- c("pop_2", "pop_3", "pop_8", "pop_11", "pop_15", "pop_5", "pop_9", "pop_13")
+e_na_list <- c("pop_6", "pop_10", "pop_14")
+e_a_list <- c("pop_1", "pop_4", "pop_7", "pop_12", "pop_16")
+o_na_list <- c("pop_5", "pop_9", "pop_13")
+o_a_list <- c("pop_2", "pop_3", "pop_8", "pop_11", "pop_15")
+
 
 #Subset the list of all the populations and individuals by the 6 groups based on population
 Even_inds <- PLINK_PED[PLINK_PED$Pop%in%e_list,]
@@ -43,31 +44,31 @@ o_na_inds <- PLINK_PED[PLINK_PED$Pop%in%o_na_list,]
 o_a_inds <- PLINK_PED[PLINK_PED$Pop%in%o_a_list,]
 
 
-####Write The lists of the individuals in each population group to a file
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/Even_inds.txt", "wb")
-write.table(Even_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-close(outputFile)
-
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/Odd_inds.txt", "wb")
-write.table(Odd_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-close(outputFile)
-
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/e_na_inds.txt", "wb")
-write.table(e_na_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-close(outputFile)
-
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/e_a_inds.txt", "wb")
-write.table(e_a_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-close(outputFile)
-
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/o_na_inds.txt", "wb")
-write.table(o_na_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-close(outputFile)
-
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/o_a_inds.txt", "wb")
-write.table(o_a_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-close(outputFile)
-
+# ####Write The lists of the individuals in each population group to a file
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/Even_inds_R.txt", "wb")
+# write.table(Even_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+# close(outputFile)
+# 
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/Odd_inds_R.txt", "wb")
+# write.table(Odd_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+# close(outputFile)
+# 
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/e_na_inds_R.txt", "wb")
+# write.table(e_na_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+# close(outputFile)
+# 
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/e_a_inds_R.txt", "wb")
+# write.table(e_a_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+# close(outputFile)
+# 
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/o_na_inds_R.txt", "wb")
+# write.table(o_na_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+# close(outputFile)
+# 
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLINK/o_a_inds_R.txt", "wb")
+# write.table(o_a_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+# close(outputFile)
+# 
 
 
 #Plot the difference in the population group numbers 
@@ -76,7 +77,7 @@ Inds_by_pop<- table(PLINK_PED[,1])
 Inds_by_pop <- as.data.frame(Inds_by_pop)
 colnames(Inds_by_pop) <- c("PopNum","Ind_counts")
 Inds_by_pop$Pop <- c("Amur10", "Lakel07", "Nome91","Nome94","Snoh03","Snoh96","Tauy09","Tauy12","Amur11", "Hayly09", "Hayly10", "Koppe91", "Koppe96", "Kushi06", "Kushi07", "Lakel06")
-Inds_by_pop$Lineage <- c("Even", "Odd", "Odd", "Even", "Odd", "Even", "Odd", "Even", "Odd", "Odd", "Even", "Odd", "Even", "Even","Odd", "Even")
+Inds_by_pop$Lineage <- c("Even", "Even", "Odd", "Even", "Odd", "Even", "Odd", "Even", "Odd", "Odd", "Even", "Odd", "Even", "Even","Odd", "Odd")
 Inds_by_pop <- as.data.frame(Inds_by_pop)
 
 #summary of all the individuals by the 6 groupings

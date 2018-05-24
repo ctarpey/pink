@@ -1,7 +1,7 @@
 ### This is not a working R code
 ###    it is a set of examples of things I'm always looking up
 ###
-###   Carolyn Tarpey | January 2018
+###   Carolyn Tarpey | Ongoing
 ### ---------------------------------------
 
 
@@ -31,6 +31,8 @@ close(outputFile)
 FST_file<-read.table("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Genepop/HWE_Genepop_FST_R.txt", header=TRUE, 
                      stringsAsFactors = FALSE, na.strings = "-" )
 
+#load genepop files Keeping the four digit format, 0303, 0000 etc
+genos1<-read.table("Z:/WORK/TARPEY/Exp_Pink_Pops/STACKS/Ustacks/OriginalWhitelists/Whitelist_Genepops/whitelist_1.genepop",colClasses="factor")
 
 
 
@@ -67,6 +69,9 @@ Even_SNPS$Btw_17_73 <- NA
 #delete a column
 #add new empty column to the end of each data frame for the flags
 Even_SNPS$Btw_17_73 <- NULL
+
+#add comma to name if not already there!
+EVEN_pops$Indv_name <- paste0(EVEN_pops$Indv_name, ",")
 
 ### Set opperations
 
