@@ -47,7 +47,7 @@ FST_file[1:5,1:5]
 dim(FST_file)
 
 #input the text file that has the modified SNPs from the Catalog file. 
-SNP_positions_all <- read.table("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/SNPposition/SNP_positions.txt", header=TRUE, 
+SNP_positions_all <- read.table("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/SNPposition/NEW_SNP_pos/NEW_SNP_Positions.txt", header=TRUE, 
                                 stringsAsFactors = FALSE, na.strings = "-" )
 head(SNP_positions_all)
 dim(SNP_positions_all)
@@ -420,7 +420,6 @@ colnames(Odd_filt_snps)<-"Odd_SNP_Index"
 head(Odd_filt_snps)
 dim(Odd_filt_snps)
 
-
 ## convert the vector of filtered Thrown out SNP indexes to a Data Frame
 Throw_even <-THROW_Even_filt_Hap
 Even_filt_throw_snps <-data.frame(stri_list2matrix(Throw_even, byrow=TRUE))
@@ -461,12 +460,12 @@ head(Even_SNPS)
 head(Odd_SNPS)
 
 # ####Write the Even_SNPS
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_SNPS.txt", "wb")
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_keep_SNPS.txt", "wb")
 write.table(Even_SNPS,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
 close(outputFile)
 
 ####Write the Odd_SNPS
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_SNPS.txt", "wb")
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_keep_SNPS.txt", "wb")
 write.table(Odd_SNPS,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
 close(outputFile)
 
@@ -526,6 +525,11 @@ snp_counts
 snp_counts_melt <- melt(snp_counts)
 snp_counts_melt
 
+#<----------------------------------------THESE SHOULD BE DONE BY PERCENTAGES BECAUSE THEYRE DIFFERENT BETWEEN LINEAGES
+dim(Even_SNPS)
+dim(Odd_SNPS)
+
+
 #pdf("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/PLOTs_Snps_per_Haplotype_lineage.pdf", width = 9, height = 7)
 
 #individual histograms of even and odd
@@ -548,6 +552,9 @@ ggplot(data=snp_counts_melt, aes(snp_counts_melt$SNPs, snp_counts_melt$value)) +
 ########################### More filtering of SNPS based on position in the tag. 
 ###Flag SNP Positions >= 16 and <= 74, (we want tags 17-73 to be able to make primers)
 dim(Even_SNPS)
+dim(Odd_SNPS)
+
+head(Even_SNPS)
 
 #add new empty column to the end of each data frame for the flags
 Even_SNPS$Btw_17_73 <- NA
@@ -564,17 +571,17 @@ Odd_SNPS$Position <- as.numeric(Odd_SNPS$Position)
 
 for (r in 1:dim(Even_SNPS)[1]){
   if ((Even_SNPS[r,3] >= 17) & (Even_SNPS[r,3] <= 73)) {
-    Even_SNPS[r,10] <- "TRUE"
+    Even_SNPS[r,6] <- "TRUE"
   } else {
-    Even_SNPS[r,10] <- "FALSE"
+    Even_SNPS[r,6] <- "FALSE"
   }
 }
 
 for (r in 1:dim(Odd_SNPS)[1]){
   if ((Odd_SNPS[r,3] >= 17) & (Odd_SNPS[r,3] <= 73)) {
-    Odd_SNPS[r,10] <- "TRUE"
+    Odd_SNPS[r,6] <- "TRUE"
   } else {
-    Odd_SNPS[r,10] <- "FALSE"
+    Odd_SNPS[r,6] <- "FALSE"
   }
 }
 
@@ -615,10 +622,10 @@ length(which(Even_Tag_Flags$Even_SNPs_InRange=="TRUE"))
 length(which(Even_Tag_Flags$Even_SNPs_InRange=="FALSE"))
 
 
-# #### Write the Even tag flags:
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_tag_flags.txt", "wb")
-# write.table(Even_Tag_Flags,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-# close(outputFile)
+#### Write the Even tag flags:
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_tag_flags.txt", "wb")
+write.table(Even_Tag_Flags,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
 
 
 ##ODD
@@ -648,23 +655,26 @@ dim(Odd_Tag_Flags)
 length(which(Odd_Tag_Flags$Odd_SNPs_InRange=="TRUE"))
 length(which(Odd_Tag_Flags$Odd_SNPs_InRange=="FALSE"))
 
-# #### Write the Odd tag flags:
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_Tag_Flags.txt", "wb")
-# write.table(Odd_Tag_Flags,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-# close(outputFile)
+#### Write the Odd tag flags:
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_Tag_Flags.txt", "wb")
+write.table(Odd_Tag_Flags,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
 
 
 ################### This section is similar to the above, but it is just for the benefit of Garrett's primer design pipeline. 
 
-Even_SNPS_PD <- Even_SNPS
-Odd_SNPS_PD <- Odd_SNPS
+Even_SNPS_Padded <- Even_SNPS
+Odd_SNPS_Padded <- Odd_SNPS
+
+head(Even_SNPS_Padded)
+head(Odd_SNPS_Padded)
 
 #add two new empty columns to the end of each data frame for the flags of the left and right limits- needed for Garrett's primer pipeline
-Even_SNPS_PD$LeftLimit<- NA
-Even_SNPS_PD$RightLimit<- NA
+Even_SNPS_Padded$LeftLimit<- NA
+Even_SNPS_Padded$RightLimit<- NA
 
-Odd_SNPS_PD$LeftLimit <- NA
-Odd_SNPS_PD$RightLimit <- NA
+Odd_SNPS_Padded$LeftLimit <- NA
+Odd_SNPS_Padded$RightLimit <- NA
 
 ##For loops that look over the snp position for the SNPs that have been identified as variable in the lineage
 # and look at whether the snp is at a position smaller than 17 and flags it 0 is yes, 1 is no
@@ -672,54 +682,54 @@ Odd_SNPS_PD$RightLimit <- NA
 ##This uses the absolute column numbers for indexing position in the dataframe, instead of column names
 #if the column positions change these will be wrong. 
 
-for (r in 1:dim(Even_SNPS_PD)[1]){
-  if (Even_SNPS_PD[r,3] < 17){
-    Even_SNPS_PD[r,11] <- 0
+for (r in 1:dim(Even_SNPS_Padded)[1]){
+  if (Even_SNPS_Padded[r,3] < 17){
+    Even_SNPS_Padded[r,7] <- 0
   } else {
-    Even_SNPS_PD[r,11] <- 1
+    Even_SNPS_Padded[r,7] <- 1
   }
-  if (Even_SNPS_PD[r,3] > 73){
-    Even_SNPS_PD[r,12] <- 0
+  if (Even_SNPS_Padded[r,3] > 73){
+    Even_SNPS_Padded[r,8] <- 0
   } else {
-    Even_SNPS_PD[r,12] <- 1
+    Even_SNPS_Padded[r,8] <- 1
   }
 }
 
-for (r in 1:dim(Odd_SNPS_PD)[1]){
-  if (Odd_SNPS_PD[r,3] < 17){
-    Odd_SNPS_PD[r,11] <- 0
+for (r in 1:dim(Odd_SNPS_Padded)[1]){
+  if (Odd_SNPS_Padded[r,3] < 17){
+    Odd_SNPS_Padded[r,7] <- 0
   } else {
-    Odd_SNPS_PD[r,11] <- 1
+    Odd_SNPS_Padded[r,7] <- 1
   }
-  if (Odd_SNPS_PD[r,3] > 73){
-    Odd_SNPS_PD[r,12] <- 0
+  if (Odd_SNPS_Padded[r,3] > 73){
+    Odd_SNPS_Padded[r,8] <- 0
   } else {
-    Odd_SNPS_PD[r,12] <- 1
+    Odd_SNPS_Padded[r,8] <- 1
   }
 }
-head(Even_SNPS_PD)
-dim(Even_SNPS_PD)
-head(Odd_SNPS_PD)
-dim(Odd_SNPS_PD)
+head(Even_SNPS_Padded)
+dim(Even_SNPS_Padded)
+head(Odd_SNPS_Padded)
+dim(Odd_SNPS_Padded)
 
 
 ####Combine those flags for each SNP into flags for each tag, This is for Garrett's primer design pipeline
 
 ##EVEN
-head(Even_SNPS_PD)
-Even_tags_PD <- unique(Even_SNPS_PD$Tag)
-head(Even_tags_PD)
-length(Even_tags_PD)
+head(Even_SNPS_Padded)
+Even_tags_Padded <- unique(Even_SNPS_Padded$Tag)
+head(Even_tags_Padded)
+length(Even_tags_Padded)
 
 #create the data frame to put the results into 
-Even_SNPs_InRange_PD <-data.frame(Even_tags_PD)
+Even_SNPs_InRange_PD <-data.frame(Even_tags_Padded)
 Even_SNPs_InRange_PD$LeftLimit <-NA
 Even_SNPs_InRange_PD$RightLimit <-NA
 head(Even_SNPs_InRange_PD)
 
-for (s in 1:length(Even_tags_PD)) {
-  tested_tag <- Even_tags_PD[s]
-  trial_set <- Even_SNPS_PD[which(Even_SNPS_PD$Tag %in% tested_tag),]
+for (s in 1:length(Even_tags_Padded)) {
+  tested_tag <- Even_tags_Padded[s]
+  trial_set <- Even_SNPS_Padded[which(Even_SNPS_Padded$Tag %in% tested_tag),]
   if (any(trial_set$LeftLimit == 0)){
     Even_SNPs_InRange_PD$LeftLimit[s]<- 0
   } else {
@@ -735,26 +745,26 @@ for (s in 1:length(Even_tags_PD)) {
 head(Even_SNPs_InRange_PD)
 
 
-#### Write the Even even flags for the primer pipeline:
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_SNPs_InRange_PD.txt", "wb")
-# write.table(Even_SNPs_InRange_PD,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-# close(outputFile)
+### Write the Even even flags for the primer pipeline:
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_SNPs_InRange_Paddinglist.txt", "wb")
+write.table(Even_SNPs_InRange_PD,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
 
-##EVEN
-head(Odd_SNPS_PD)
-Odd_tags_PD <- unique(Odd_SNPS_PD$Tag)
-head(Odd_tags_PD)
-length(Odd_tags_PD)
+##ODD
+head(Odd_SNPS_Padded)
+Odd_tags_Padded <- unique(Odd_SNPS_Padded$Tag)
+head(Odd_tags_Padded)
+length(Odd_tags_Padded)
 
 #create the data frame to put the results into 
-Odd_SNPs_InRange_PD <-data.frame(Odd_tags_PD)
+Odd_SNPs_InRange_PD <-data.frame(Odd_tags_Padded)
 Odd_SNPs_InRange_PD$LeftLimit <-NA
 Odd_SNPs_InRange_PD$RightLimit <-NA
 head(Odd_SNPs_InRange_PD)
 
-for (s in 1:length(Odd_tags_PD)) {
-  tested_tag <- Odd_tags_PD[s]
-  trial_set <- Odd_SNPS_PD[which(Odd_SNPS_PD$Tag %in% tested_tag),]
+for (s in 1:length(Odd_tags_Padded)) {
+  tested_tag <- Odd_tags_Padded[s]
+  trial_set <- Odd_SNPS_Padded[which(Odd_SNPS_Padded$Tag %in% tested_tag),]
   if (any(trial_set$LeftLimit == 0)){
     Odd_SNPs_InRange_PD$LeftLimit[s]<- 0
   } else {
@@ -769,13 +779,10 @@ for (s in 1:length(Odd_tags_PD)) {
 
 head(Odd_SNPs_InRange_PD)
 
-
 ### Write the Odd flags for the primer pipeline:
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_SNPs_InRange_PD", "wb")
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_SNPs_InRange_Paddinglist", "wb")
 write.table(Odd_SNPs_InRange_PD,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
 close(outputFile)
-
-
 
 
 ###################################### Marker selection based on ranked FSt of loci 
@@ -821,8 +828,8 @@ length(bb)
 cc <- setdiff(Odd_Tag_Flags$Tag, Odd_FST_file$Tag)
 length(cc)
 
-#### This part is unecessary:
-# ### Subset the FST files for the tags that we have in the Even and Odd tag flag files 
+# #### This part is unecessary:
+# ### Subset the FST files for the tags that we have in the Even and Odd tag flag files
 # Even_FST_file <- Even_FST_file[which(Even_Tag_Flags$Tag %in% Even_FST_file$Tag),]
 # head(Even_FST_file)
 # dim(Even_FST_file)
@@ -925,11 +932,18 @@ NA_ASIA_even_union_FST_sort <-NA_ASIA_even_union_FST[order(NA_ASIA_even_union_FS
 head( NA_ASIA_even_union_FST_sort)
 dim(NA_ASIA_even_union_FST_sort)
 
-# #### Write a list of the loci that were found in the overlapping set for Evens:
-# ### Change the name to reflect the number choice
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ASIAeven_set", "wb")
-# write.table(ASIAeven_set,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-# close(outputFile)
+### Write a three files for the evens, each region's passed list and the overlap of passed:
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/EVEN_NAeven_Passed.txt", "wb")
+write.table(NAeven_set,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/EVEN_ASIAeven_Passed.txt", "wb")
+write.table(ASIAeven_set,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/EVEN_NA_ASIA_even_Passed_union.txt", "wb")
+write.table(NA_ASIA_even_union,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
 
 ################# ODD
 #top FST loci for NA_odd,
@@ -971,33 +985,40 @@ NA_ASIA_odd_union_FST_sort <-NA_ASIA_odd_union_FST[order(NA_ASIA_odd_union_FST$O
 head( NA_ASIA_odd_union_FST_sort)
 dim(NA_ASIA_odd_union_FST_sort)
 
-# #### Write a list of the loci that were found in the overlapping set for Odds:
-# ### Change the name to reflect the number choice
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ASIAodd_set.txt", "wb")
-# write.table(ASIAodd_set,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-# close(outputFile)
+### Write a three files for the evens, each region's passed list and the overlap of passed:
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ODD_NAodd_Passed.txt", "wb")
+write.table(NAodd_set,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ODD_ASIAodd_Passed.txt", "wb")
+write.table(ASIAodd_set,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ODD_NA_ASIA_odd_Passed_union.txt", "wb")
+write.table(NA_ASIA_odd_union,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
 
 #####################################################
 #########overlap between two panels
 overlap <- intersect(NA_ASIA_even_union, NA_ASIA_odd_union)
 length(overlap)
-head(overlap)
+#head(overlap)
 
-## make a new dataframe that has the FST info for the overlapping set 
-Lineage_overlap_FST <- FST_file[FST_file$Locus %in% overlap,]  
-Lineage_overlap_FST_sort <-Lineage_overlap_FST[order(Lineage_overlap_FST$ALL_noSusit, decreasing = TRUE),]
-head(Lineage_overlap_FST_sort)
-dim(Lineage_overlap_FST_sort)
-
-# ####Write a list of the loci that were found to be overlapping between the even and the odd panels:
-# ### Change the name of the file to reflect the choice of loci and the final number
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/OverlapBetweenEvenOdd500_126.txt", "wb")
-# write.table(Lineage_overlap_FST_sort,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-# close(outputFile)
+# ## make a new dataframe that has the FST info for the overlapping set 
+# Lineage_overlap_FST <- FST_file[FST_file$Locus %in% overlap,]  
+# Lineage_overlap_FST_sort <-Lineage_overlap_FST[order(Lineage_overlap_FST$ALL_noSusit, decreasing = TRUE),]
+# head(Lineage_overlap_FST_sort)
+# dim(Lineage_overlap_FST_sort)
+# 
+# # ####Write a list of the loci that were found to be overlapping between the even and the odd panels:
+# # ### Change the name of the file to reflect the choice of loci and the final number
+# # outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/OverlapBetweenEvenOdd500_126.txt", "wb")
+# # write.table(Lineage_overlap_FST_sort,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+# # close(outputFile)
 
 ##############################
 ########## top X FST loci that were excluded from the combined analysis because of the SNPS_inRange flag
-FST_file_NAeven_sort
+#FST_file_NAeven_sort
 
 ##pull out the Failed in the SNPS_inRange flag
 FST_NAeven_failed <- FST_file_NAeven_sort[which(FST_file_NAeven_sort$Even_SNPs_InRange == "FALSE"),] 
@@ -1016,13 +1037,108 @@ head(ASIAeven_top_failed)
 head(NAodd_top_failed)
 head(ASIAodd_top_failed)
 
-### Export the odd and even lists of top failed loci
-Even_top_failed_tags <- unique(append(NAeven_top_failed$Locus,ASIAeven_top_failed$Locus))
-length(Even_top_failed_tags)
+##Find the top FST for the NA_even
+FST_NA_even<- Even_FST_file[,c("Locus","NA_even","Even_SNPs_InRange")]
+head(FST_NA_even)
+FST_file_NAeven_sort <- FST_NA_even[order(FST_NA_even$NA_even, decreasing=TRUE),]
+head(FST_file_NAeven_sort)
+head(Even_FST_file)
 
-Odd_top_failed_tags <- unique(append(NAodd_top_failed$Locus,ASIAodd_top_failed$Locus))
-length(Odd_top_failed_tags)
+###Pull out the positions of the SNPS in the top x number of loci with the highest FST that failed the SNP postion flag
+FST_NAeven_top_failed_snps <- Even_FST_file[Even_FST_file$Locus %in% NAeven_top_failed$Locus,]
+FST_NAeven_top_failed_snps<- FST_NAeven_top_failed_snps[,c("Locus","NA_even","Even_SNPs_InRange")]
+FST_NAeven_top_failed_snps <- FST_NAeven_top_failed_snps[order(FST_NAeven_top_failed_snps$NA_even, decreasing=TRUE),]
+dim(FST_NAeven_top_failed_snps)
+head(FST_NAeven_top_failed_snps)
 
+FST_ASIAeven_top_failed_snps <- Even_FST_file[Even_FST_file$Locus %in% ASIAeven_top_failed$Locus,]
+FST_ASIAeven_top_failed_snps<- FST_ASIAeven_top_failed_snps[,c("Locus","ASIA_even","Even_SNPs_InRange")]
+FST_ASIAeven_top_failed_snps <- FST_ASIAeven_top_failed_snps[order(FST_ASIAeven_top_failed_snps$ASIA_even, decreasing=TRUE),]
+dim(FST_ASIAeven_top_failed_snps)
+head(FST_ASIAeven_top_failed_snps)
+
+FST_ASIAodd_top_failed_snps <- Odd_FST_file[Odd_FST_file$Locus %in% ASIAodd_top_failed$Locus,]
+FST_ASIAodd_top_failed_snps<- FST_ASIAodd_top_failed_snps[,c("Locus","ASIA_odd","Odd_SNPs_InRange")]
+FST_ASIAodd_top_failed_snps <- FST_ASIAodd_top_failed_snps[order(FST_ASIAodd_top_failed_snps$ASIA_odd, decreasing=TRUE),]
+dim(FST_ASIAodd_top_failed_snps)
+head(FST_ASIAodd_top_failed_snps)
+
+FST_NAodd_top_failed_snps <- Odd_FST_file[Odd_FST_file$Locus %in% NAodd_top_failed$Locus,]
+FST_NAodd_top_failed_snps<- FST_NAodd_top_failed_snps[,c("Locus","NA_odd","Odd_SNPs_InRange")]
+FST_NAodd_top_failed_snps <- FST_NAodd_top_failed_snps[order(FST_NAodd_top_failed_snps$NA_odd, decreasing=TRUE),]
+dim(FST_NAodd_top_failed_snps)
+head(FST_NAodd_top_failed_snps)
+
+FST_NAeven_top_failed_snps_avgFST <- mean(FST_NAeven_top_failed_snps$NA_even)
+FST_NAeven_top_failed_snps_maxFST <- max(FST_NAeven_top_failed_snps$NA_even)
+FST_NAeven_top_failed_snps_minFST <- min(FST_NAeven_top_failed_snps$NA_even)
+cat("NAeven FST max, min, average: ", FST_NAeven_top_failed_snps_maxFST, FST_NAeven_top_failed_snps_minFST,
+    FST_NAeven_top_failed_snps_avgFST )
+
+### Change the name of the file to reflect the choice of loci
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/EVEN_NAeven_Failed.txt", "wb")
+write.table(FST_NAeven_top_failed_snps,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
+
+FST_ASIAeven_top_failed_snps_avgFST <- mean(FST_ASIAeven_top_failed_snps$ASIA_even)
+FST_ASIAeven_top_failed_snps_maxFST <- max(FST_ASIAeven_top_failed_snps$ASIA_even)
+FST_ASIAeven_top_failed_snps_minFST <- min(FST_ASIAeven_top_failed_snps$ASIA_even)
+cat("ASIAeven FST max, min, average: ", FST_ASIAeven_top_failed_snps_maxFST, FST_ASIAeven_top_failed_snps_minFST,
+    FST_ASIAeven_top_failed_snps_avgFST )
+
+## Change the name of the file to reflect the choice of loci
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/EVEN_ASIAeven_Failed.txt", "wb")
+write.table(FST_ASIAeven_top_failed_snps,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
+
+FST_NAodd_top_failed_snps_avgFST <- mean(FST_NAodd_top_failed_snps$NA_odd)
+FST_NAodd_top_failed_snps_maxFST <- max(FST_NAodd_top_failed_snps$NA_odd)
+FST_NAodd_top_failed_snps_minFST <- min(FST_NAodd_top_failed_snps$NA_odd)
+cat("NAodd FST max, min, average: ", FST_NAodd_top_failed_snps_maxFST, FST_NAodd_top_failed_snps_minFST,
+    FST_NAodd_top_failed_snps_avgFST )
+
+### Change the name of the file to reflect the choice of loci
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ODD_NAodd_Failed.txt", "wb")
+write.table(FST_NAodd_top_failed_snps,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
+
+FST_ASIAodd_top_failed_snps_avgFST <- mean(FST_ASIAodd_top_failed_snps$ASIA_odd)
+FST_ASIAodd_top_failed_snps_maxFST <- max(FST_ASIAodd_top_failed_snps$ASIA_odd)
+FST_ASIAodd_top_failed_snps_minFST <- min(FST_ASIAodd_top_failed_snps$ASIA_odd)
+cat("ASIAodd FST max, min, average: ", FST_ASIAodd_top_failed_snps_maxFST, FST_ASIAodd_top_failed_snps_minFST,
+    FST_ASIAodd_top_failed_snps_avgFST )
+
+### Change the name of the file to reflect the choice of loci
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ODD_ASIAodd_Failed.txt", "wb")
+write.table(FST_ASIAodd_top_failed_snps,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
+
+
+#########################################################################
+#### Use the combination of the 250 top failed from each of the groups for the lineage. So take the top 250 from each group and then do a union
+####### overlap of the Even NA and ASian failed 
+Even_failed_union <- union(NAeven_top_failed$Locus, ASIAeven_top_failed$Locus)
+length(Even_failed_union)
+
+##In Asia Even, not in NA Even
+In_ASIA_Even_Not_NA_failed <- setdiff(ASIAeven_top_failed$Locus, NAeven_top_failed$Locus)
+length(In_ASIA_Even_Not_NA_failed)
+
+##In NA Even, not in Asia Even
+In_NA_Even_Not_ASIA_failed <- setdiff(NAeven_top_failed$Locus, ASIAeven_top_failed$Locus)
+length(In_NA_Even_Not_ASIA_failed)
+
+Intersection_NA_Even_ASIA_failed <- intersect(NAeven_top_failed$Locus, ASIAeven_top_failed$Locus)
+length(Intersection_NA_Even_ASIA_failed)
+
+
+# ### Export the odd and even lists of top failed loci
+# Even_top_failed_tags <- unique(append(NAeven_top_failed$Locus,ASIAeven_top_failed$Locus))
+# length(Even_top_failed_tags)
+# 
+# Odd_top_failed_tags <- unique(append(NAodd_top_failed$Locus,ASIAodd_top_failed$Locus))
+# length(Odd_top_failed_tags)
+# 
 # outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_top_failed_tags.txt", "wb")
 # write.table(Odd_top_failed_tags,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
 # close(outputFile)
@@ -1032,126 +1148,9 @@ length(Odd_top_failed_tags)
 # close(outputFile)
 
 
-################## Make the Master_FST 
-#FST_file_raw <- FST_file
-#FST_file <- FST_file_raw
-
-head(FST_file)
-dim(FST_file)
-head(SNP_positions_all)
-dim(SNP_positions_all)
-
-newColNames <- c("Tag", "Pos")
-newCols <- colsplit(FST_file$Locus, "_", newColNames)
-FST_file <- cbind(newCols, FST_file)
-FST_file[,3] <- NULL
-head(FST_file)
-dim(FST_file)
-#FST_file <- within(FST_file, rm("Pos","Index"))
-head(FST_file)
-
-
-##merge the FST_file the SNP_positions_all to see what the SNP positions are for the loci that failed. 
-masterFST_file <- merge(SNP_positions_all, FST_file, by= "Tag")
-masterFST_file <- rename(masterFST_file, Locus = Locus.x, FST_Locus = Locus.y)
-head(masterFST_file)
-
-#trim columns we dont need
-#masterFST_file$Pos <-NULL
-masterFST_file$SNP_Index <-NULL
-masterFST_file$SNP_tag_index <-NULL
-head(masterFST_file)
-
-###Pull out the positions of the SNPS in the top x number of loci with the highest FST that failed the SNP postion flag
-FST_NAeven_top_failed_snps <- masterFST_file[masterFST_file$FST_Locus %in% NAeven_top_failed$Locus,]
-FST_NAeven_top_failed_snps_avg <- FST_NAeven_top_failed_snps[FST_NAeven_top_failed_snps$Locus %in% unique(FST_NAeven_top_failed_snps$FST_Locus),]
-dim(FST_NAeven_top_failed_snps_avg)
-head(FST_NAeven_top_failed_snps_avg)
-
-FST_ASIAeven_top_failed_snps <- masterFST_file[masterFST_file$FST_Locus %in% ASIAeven_top_failed$Locus,]
-FST_ASIAeven_top_failed_snps_avg <- FST_ASIAeven_top_failed_snps[FST_ASIAeven_top_failed_snps$Locus %in% unique(FST_ASIAeven_top_failed_snps$FST_Locus),]
-dim(FST_ASIAeven_top_failed_snps_avg)
-head(FST_ASIAeven_top_failed_snps_avg)
-
-FST_ASIAodd_top_failed_snps <- masterFST_file[masterFST_file$FST_Locus %in% ASIAodd_top_failed$Locus,]
-FST_ASIAodd_top_failed_snps_avg <- FST_ASIAodd_top_failed_snps[FST_ASIAodd_top_failed_snps$Locus %in% unique(FST_ASIAodd_top_failed_snps$FST_Locus),]
-dim(FST_ASIAodd_top_failed_snps_avg)
-head(FST_ASIAodd_top_failed_snps_avg)
-
-FST_NAodd_top_failed_snps <- masterFST_file[masterFST_file$FST_Locus %in% NAodd_top_failed$Locus,]
-FST_NAodd_top_failed_snps_avg <- FST_NAodd_top_failed_snps[FST_NAodd_top_failed_snps$Locus %in% unique(FST_NAodd_top_failed_snps$FST_Locus),]
-dim(FST_NAodd_top_failed_snps_avg)
-head(FST_NAodd_top_failed_snps_avg)
-
-FST_NAeven_top_failed_snps_avgFST <- mean(FST_NAeven_top_failed_snps_avg$NA_even)
-FST_NAeven_top_failed_snps_maxFST <- max(FST_NAeven_top_failed_snps_avg$NA_even)
-FST_NAeven_top_failed_snps_minFST <- min(FST_NAeven_top_failed_snps_avg$NA_even)
-cat("NAeven FST max, min, average: ", FST_NAeven_top_failed_snps_maxFST, FST_NAeven_top_failed_snps_minFST,
-    FST_NAeven_top_failed_snps_avgFST )
-### Change the name of the file to reflect the choice of loci
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/FST_NAeven_top250_failed_snps.txt", "wb")
-write.table(FST_NAeven_top_failed_snps_avg,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-close(outputFile)
-
-head(FST_ASIAeven_top_failed_snps_avg)
-dim(FST_ASIAeven_top_failed_snps_avg)
-FST_ASIAeven_top_failed_snps_avgFST <- mean(FST_ASIAeven_top_failed_snps_avg$ASIA_even)
-FST_ASIAeven_top_failed_snps_maxFST <- max(FST_ASIAeven_top_failed_snps_avg$ASIA_even)
-FST_ASIAeven_top_failed_snps_minFST <- min(FST_ASIAeven_top_failed_snps_avg$ASIA_even)
-cat("ASIAeven FST max, min, average: ", FST_ASIAeven_top_failed_snps_maxFST, FST_ASIAeven_top_failed_snps_minFST,
-    FST_ASIAeven_top_failed_snps_avgFST )
-## Change the name of the file to reflect the choice of loci
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/FST_ASIAeven_top250_failed_snps.txt", "wb")
-write.table(FST_ASIAeven_top_failed_snps_avg,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-close(outputFile)
-
-head(FST_NAodd_top_failed_snps_avg)
-dim(FST_NAodd_top_failed_snps_avg)
-FST_NAodd_top_failed_snps_avgFST <- mean(FST_NAodd_top_failed_snps_avg$NA_odd)
-FST_NAodd_top_failed_snps_maxFST <- max(FST_NAodd_top_failed_snps_avg$NA_odd)
-FST_NAodd_top_failed_snps_minFST <- min(FST_NAodd_top_failed_snps_avg$NA_odd)
-cat("NAodd FST max, min, average: ", FST_NAodd_top_failed_snps_maxFST, FST_NAodd_top_failed_snps_minFST,
-    FST_NAodd_top_failed_snps_avgFST )
-### Change the name of the file to reflect the choice of loci
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/FST_NAodd_top250_failed_snps.txt", "wb")
-write.table(FST_NAodd_top_failed_snps_avg,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-close(outputFile)
-
-head(FST_ASIAodd_top_failed_snps_avg)
-dim(FST_ASIAodd_top_failed_snps_avg)
-FST_ASIAodd_top_failed_snps_avgFST <- mean(FST_ASIAodd_top_failed_snps_avg$ASIA_odd)
-FST_ASIAodd_top_failed_snps_maxFST <- max(FST_ASIAodd_top_failed_snps_avg$ASIA_odd)
-FST_ASIAodd_top_failed_snps_minFST <- min(FST_ASIAodd_top_failed_snps_avg$ASIA_odd)
-cat("ASIAodd FST max, min, average: ", FST_ASIAodd_top_failed_snps_maxFST, FST_ASIAodd_top_failed_snps_minFST,
-    FST_ASIAodd_top_failed_snps_avgFST )
-### Change the name of the file to reflect the choice of loci
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/FST_ASIAodd_top250_failed_snps.txt", "wb")
-write.table(FST_ASIAodd_top_failed_snps_avg,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-close(outputFile)
-
-#########################################################################
-#### Use the combination of the 250 top failed from each of the groups for the lineage. So take the top 250 from each group and then do a union
-####### overlap of the Even NA and ASian failed 
-Even_failed_union <- union(NAeven_top_failed$Locus, ASIAeven_top_failed$Locus)
-length(Even_failed_union)
-head(Even_failed_union)
-
-##In Asia Even, not in NA Even
-In_ASIA_Even_Not_NA_failed <- setdiff(ASIAeven_top_failed$Locus, NAeven_top_failed$Locus)
-length(In_ASIA_Even_Not_NA_failed)
-
-##In NA Odd, not in Asia Odd
-In_NA_Even_Not_ASIA_failed <- setdiff(NAeven_top_failed$Locus, ASIAeven_top_failed$Locus)
-length(In_NA_Even_Not_ASIA_failed)
-
-Intersection_NA_Even_ASIA_failed <- intersect(NAeven_top_failed$Locus, ASIAeven_top_failed$Locus)
-length(Intersection_NA_Even_ASIA_failed)
-
-
 ####### overlap of the Odd NA and ASian failed 
 Odd_failed_union<- union(NAodd_top_failed$Locus, ASIAodd_top_failed$Locus)
 length(Odd_failed_union)
-head(Odd_failed_union)
 
 ##In Asia Odd, not in NA Odd
 In_ASIA_ODD_Not_NA_failed <- setdiff(ASIAodd_top_failed$Locus, NAodd_top_failed$Locus)
@@ -1168,6 +1167,7 @@ length(Intersection_NA_odd_ASIA_failed)
 Even_failed_passed_list <- append(NA_ASIA_even_union_FST_sort$Locus, Even_failed_union)
 head(Even_failed_passed_list)
 length(Even_failed_passed_list)
+
 # ## Change the name of the file
 # outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_failed_passed_list.txt", "wb")
 # write.table(Even_failed_passed_list,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
@@ -1191,7 +1191,7 @@ head(Both_failed_union)
 masterCombined_BothLineages <- union(Even_failed_passed_list, Odd_failed_passed_list) #<- THIS IS THE LIST OF ALL THE LOCI TO MAKE FASTA FILE 
 length(masterCombined_BothLineages)
 head(masterCombined_BothLineages)
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/masterCombined_BothLineages_2312.txt", "wb")
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/masterCombined_BothLineages_2311.txt", "wb")
 # write.table(masterCombined_BothLineages,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
 # close(outputFile)
 
@@ -1201,7 +1201,7 @@ head(FST_file_COMBINED_table)
 dim(FST_file_COMBINED_table)
 
 # ## Change the name of the file
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/FST_file_COMBINED_table_2312.txt", "wb")
+# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/FST_file_COMBINED_table_2311.txt", "wb")
 # write.table(FST_file_COMBINED_table,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
 # close(outputFile)
 
