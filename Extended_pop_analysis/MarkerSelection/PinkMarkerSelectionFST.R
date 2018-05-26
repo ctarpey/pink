@@ -746,7 +746,7 @@ head(Even_SNPs_InRange_PD)
 
 
 ### Write the Even even flags for the primer pipeline:
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_SNPs_InRange_Paddinglist.txt", "wb")
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_SNPs_Paddinglist.txt", "wb")
 write.table(Even_SNPs_InRange_PD,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
 close(outputFile)
 
@@ -780,7 +780,7 @@ for (s in 1:length(Odd_tags_Padded)) {
 head(Odd_SNPs_InRange_PD)
 
 ### Write the Odd flags for the primer pipeline:
-outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_SNPs_InRange_Paddinglist", "wb")
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_SNPs_Paddinglist.txt", "wb")
 write.table(Odd_SNPs_InRange_PD,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
 close(outputFile)
 
@@ -942,7 +942,7 @@ write.table(ASIAeven_set,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,e
 close(outputFile)
 
 outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/EVEN_NA_ASIA_even_Passed_union.txt", "wb")
-write.table(NA_ASIA_even_union,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+write.table(NA_ASIA_even_union,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
 close(outputFile)
 
 ################# ODD
@@ -967,6 +967,7 @@ cat("ASIAodd FST max, min, average: ", ASIAodd_set_maxFST, ASIAodd_set_minFST, A
 ###set operations to see how many overlap: 
 NA_ASIA_odd_union <- union(NAodd_set$Locus, ASIAodd_set$Locus)
 length(NA_ASIA_odd_union)
+head(NA_ASIA_odd_union)
 
 ##In Asia Odd, not in NA Odd
 In_ASIA_ODD_Not_NA <- setdiff(ASIAodd_set$Locus, NAodd_set$Locus)
@@ -995,7 +996,7 @@ write.table(ASIAodd_set,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eo
 close(outputFile)
 
 outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ODD_NA_ASIA_odd_Passed_union.txt", "wb")
-write.table(NA_ASIA_odd_union,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+write.table(NA_ASIA_odd_union,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
 close(outputFile)
 
 #####################################################
@@ -1051,6 +1052,7 @@ FST_NAeven_top_failed_snps <- FST_NAeven_top_failed_snps[order(FST_NAeven_top_fa
 dim(FST_NAeven_top_failed_snps)
 head(FST_NAeven_top_failed_snps)
 
+
 FST_ASIAeven_top_failed_snps <- Even_FST_file[Even_FST_file$Locus %in% ASIAeven_top_failed$Locus,]
 FST_ASIAeven_top_failed_snps<- FST_ASIAeven_top_failed_snps[,c("Locus","ASIA_even","Even_SNPs_InRange")]
 FST_ASIAeven_top_failed_snps <- FST_ASIAeven_top_failed_snps[order(FST_ASIAeven_top_failed_snps$ASIA_even, decreasing=TRUE),]
@@ -1072,8 +1074,7 @@ head(FST_NAodd_top_failed_snps)
 FST_NAeven_top_failed_snps_avgFST <- mean(FST_NAeven_top_failed_snps$NA_even)
 FST_NAeven_top_failed_snps_maxFST <- max(FST_NAeven_top_failed_snps$NA_even)
 FST_NAeven_top_failed_snps_minFST <- min(FST_NAeven_top_failed_snps$NA_even)
-cat("NAeven FST max, min, average: ", FST_NAeven_top_failed_snps_maxFST, FST_NAeven_top_failed_snps_minFST,
-    FST_NAeven_top_failed_snps_avgFST )
+cat("NAeven FST max, min, average: ", FST_NAeven_top_failed_snps_maxFST, FST_NAeven_top_failed_snps_minFST, FST_NAeven_top_failed_snps_avgFST )
 
 ### Change the name of the file to reflect the choice of loci
 outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/EVEN_NAeven_Failed.txt", "wb")
@@ -1083,8 +1084,7 @@ close(outputFile)
 FST_ASIAeven_top_failed_snps_avgFST <- mean(FST_ASIAeven_top_failed_snps$ASIA_even)
 FST_ASIAeven_top_failed_snps_maxFST <- max(FST_ASIAeven_top_failed_snps$ASIA_even)
 FST_ASIAeven_top_failed_snps_minFST <- min(FST_ASIAeven_top_failed_snps$ASIA_even)
-cat("ASIAeven FST max, min, average: ", FST_ASIAeven_top_failed_snps_maxFST, FST_ASIAeven_top_failed_snps_minFST,
-    FST_ASIAeven_top_failed_snps_avgFST )
+cat("ASIAeven FST max, min, average: ", FST_ASIAeven_top_failed_snps_maxFST, FST_ASIAeven_top_failed_snps_minFST, FST_ASIAeven_top_failed_snps_avgFST )
 
 ## Change the name of the file to reflect the choice of loci
 outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/EVEN_ASIAeven_Failed.txt", "wb")
@@ -1094,8 +1094,7 @@ close(outputFile)
 FST_NAodd_top_failed_snps_avgFST <- mean(FST_NAodd_top_failed_snps$NA_odd)
 FST_NAodd_top_failed_snps_maxFST <- max(FST_NAodd_top_failed_snps$NA_odd)
 FST_NAodd_top_failed_snps_minFST <- min(FST_NAodd_top_failed_snps$NA_odd)
-cat("NAodd FST max, min, average: ", FST_NAodd_top_failed_snps_maxFST, FST_NAodd_top_failed_snps_minFST,
-    FST_NAodd_top_failed_snps_avgFST )
+cat("NAodd FST max, min, average: ", FST_NAodd_top_failed_snps_maxFST, FST_NAodd_top_failed_snps_minFST, FST_NAodd_top_failed_snps_avgFST )
 
 ### Change the name of the file to reflect the choice of loci
 outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ODD_NAodd_Failed.txt", "wb")
@@ -1105,8 +1104,7 @@ close(outputFile)
 FST_ASIAodd_top_failed_snps_avgFST <- mean(FST_ASIAodd_top_failed_snps$ASIA_odd)
 FST_ASIAodd_top_failed_snps_maxFST <- max(FST_ASIAodd_top_failed_snps$ASIA_odd)
 FST_ASIAodd_top_failed_snps_minFST <- min(FST_ASIAodd_top_failed_snps$ASIA_odd)
-cat("ASIAodd FST max, min, average: ", FST_ASIAodd_top_failed_snps_maxFST, FST_ASIAodd_top_failed_snps_minFST,
-    FST_ASIAodd_top_failed_snps_avgFST )
+cat("ASIAodd FST max, min, average: ", FST_ASIAodd_top_failed_snps_maxFST, FST_ASIAodd_top_failed_snps_minFST,FST_ASIAodd_top_failed_snps_avgFST )
 
 ### Change the name of the file to reflect the choice of loci
 outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/ODD_ASIAodd_Failed.txt", "wb")
@@ -1132,20 +1130,20 @@ Intersection_NA_Even_ASIA_failed <- intersect(NAeven_top_failed$Locus, ASIAeven_
 length(Intersection_NA_Even_ASIA_failed)
 
 
-# ### Export the odd and even lists of top failed loci
-# Even_top_failed_tags <- unique(append(NAeven_top_failed$Locus,ASIAeven_top_failed$Locus))
-# length(Even_top_failed_tags)
-# 
-# Odd_top_failed_tags <- unique(append(NAodd_top_failed$Locus,ASIAodd_top_failed$Locus))
-# length(Odd_top_failed_tags)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_top_failed_tags.txt", "wb")
-# write.table(Odd_top_failed_tags,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_top_failed_tags.txt", "wb")
-# write.table(Even_top_failed_tags,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
+### Export the odd and even lists of top failed loci
+Even_top_failed_tags <- unique(append(NAeven_top_failed$Locus,ASIAeven_top_failed$Locus))
+length(Even_top_failed_tags)
+
+Odd_top_failed_tags <- unique(append(NAodd_top_failed$Locus,ASIAodd_top_failed$Locus))
+length(Odd_top_failed_tags)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_top_failed_tags.txt", "wb")
+write.table(Odd_top_failed_tags,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_top_failed_tags.txt", "wb")
+write.table(Even_top_failed_tags,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
 
 
 ####### overlap of the Odd NA and ASian failed 
@@ -1168,18 +1166,18 @@ Even_failed_passed_list <- append(NA_ASIA_even_union_FST_sort$Locus, Even_failed
 head(Even_failed_passed_list)
 length(Even_failed_passed_list)
 
-# ## Change the name of the file
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_failed_passed_list.txt", "wb")
-# write.table(Even_failed_passed_list,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
+## Change the name of the file
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Even_failed_passed_list.txt", "wb")
+write.table(Even_failed_passed_list,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
 
 Odd_failed_passed_list <- append(NA_ASIA_odd_union_FST_sort$Locus, Odd_failed_union)
 head(Odd_failed_passed_list)
 length(Odd_failed_passed_list)
-#  ## Change the name of the file
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_failed_passed_list.txt", "wb")
-# write.table(Odd_failed_passed_list,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
+ ## Change the name of the file
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/Odd_failed_passed_list.txt", "wb")
+write.table(Odd_failed_passed_list,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
 
 ###########Make a table that has the FST, Locus_FST, SNP Pos and SNP Flag for all the pass and failed loci tog. 
 #combine the two failed lists, so both lineages in one 
@@ -1191,19 +1189,20 @@ head(Both_failed_union)
 masterCombined_BothLineages <- union(Even_failed_passed_list, Odd_failed_passed_list) #<- THIS IS THE LIST OF ALL THE LOCI TO MAKE FASTA FILE 
 length(masterCombined_BothLineages)
 head(masterCombined_BothLineages)
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/masterCombined_BothLineages_2311.txt", "wb")
-# write.table(masterCombined_BothLineages,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/masterCombined_BothLineages_2319.txt", "wb")
+write.table(masterCombined_BothLineages,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
 
 #Make the COMBINED loci list table 
 FST_file_COMBINED_table <- FST_file[FST_file$Locus %in% masterCombined_BothLineages,] 
 head(FST_file_COMBINED_table)
 dim(FST_file_COMBINED_table)
 
-# ## Change the name of the file
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/FST_file_COMBINED_table_2311.txt", "wb")
-# write.table(FST_file_COMBINED_table,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
-# close(outputFile)
+## Change the name of the file
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/MarkerSelection/FST_file_COMBINED_table_2319.txt", "wb")
+write.table(FST_file_COMBINED_table,outputFile,quote=FALSE,row.names=FALSE,col.names=TRUE,eol="\n")
+close(outputFile)
 
 #Make the failed loci their own table that has the many SNPS that they have. 
 masterFST_file_failed_union <- masterFST_file[masterFST_file$FST_Locus %in% Both_failed_union,] 
