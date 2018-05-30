@@ -156,6 +156,7 @@ Blue_pink_12 <-c("ALL" = "#57007c", "ALL_NS" = "#8800C3", "Even"="#000080", "Eve
                  "Even_A"= "#5555AA", "Odd_NA"="#FF55FF", "Odd_NA_NS"= "#FFAAFF", "Odd_A" = "#cc88cc")
 plot(rep(1,12),col=Blue_pink_12,pch=19,cex=7)
 
+pdf("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/Population_group_counts.pdf", width = 9, height = 7)
 
 #plot of all the individuals by the  groupings
 ggplot(data=Summary_Ped, aes(Summary_Ped$Plotting, Summary_Ped$Ind_counts)) + theme_bw() +
@@ -164,8 +165,6 @@ ggplot(data=Summary_Ped, aes(Summary_Ped$Plotting, Summary_Ped$Ind_counts)) + th
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  +  scale_fill_manual(values = Blue_pink_10) +
   scale_x_discrete(limits = c("Even", "Even_NS","Even_NA","Even_NA_NS", "Even_A","Odd", "Odd_NS", "Odd_NA", "Odd_NA_NS", "Odd_A" ))
 
-
-
 #plot of all the individuals by their populations
 ggplot(data=POP_counts, aes(POP_counts$LINEAGE, POP_counts$Ind_counts)) + theme_bw() +
   geom_bar(aes(fill= POP_counts$POP), stat="identity", position="dodge", alpha= .75) + theme(legend.position="none") +
@@ -173,4 +172,4 @@ ggplot(data=POP_counts, aes(POP_counts$LINEAGE, POP_counts$Ind_counts)) + theme_
   scale_fill_manual(values = Histo_18_colors) + geom_text(aes(x = POP_counts$LINEAGE, y = POP_counts$Ind_counts, 
           label = POP_counts$POPNAME, group = POP_counts$POP),position = position_dodge(width = .9), vjust = -0.5, size = 2)
 
-
+dev.off()
