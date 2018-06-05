@@ -114,6 +114,16 @@ colnames(Odd_matrix) <- c("Tags","SNPs_InRange")
 locusGenoRate<-apply(allGenos,2,function(x) 1-(sum(x=="0000")/dim(allGenos)[1]))
 
 
+############################################## FUNCTIONS
+#FRom : https://gist.github.com/isomorphisms/6c7500900fb4ecf7b839 how to sample the middle randomly of your data set: 
+#install.packages("devtools")
+#devtools::install_github("hadley/bigvis")
+require(bigvis)
+taste <- function(soup, ladle=5L) sample.int(x=soup, size=ladle, replace=TRUE)
+peek <- function(df,n=5L) df[ taste(nrow(df),n) ,   ]      #dataframe[r,c]  means "subset of dataframe row #r, column #c"
+p <- function(df,n=5L)  rbind(head(df,1L), peek(df,n), tail(df,1L)) 
+
+p(LD_data_a_all_sort)
 
 
 

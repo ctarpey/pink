@@ -7,7 +7,8 @@
 #It requires the list of the populations and idividuals that are listed in the PED file of PLINK. I wrote a little python code that takes the first two columns from that file
 # Subset_PED_for_KEEP.py 
 
-#install.packages("RColorBrewer")
+#install.packages("gridExtra")
+#library(colorRampPalette)
 library(ggplot2)
 library(vcfR)
 library(stringr)
@@ -18,7 +19,6 @@ library(plotly)
 library(gridExtra)
 library(scales) 
 library(grid)
-library(colorRampPalette)
 library(RColorBrewer)
 
 #load the txt file that has the pops and the individuals in each: 
@@ -30,74 +30,97 @@ POP_INFO <-read.delim("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/
 head(POP_INFO)
 
 
+
 ##### Lists of the populations in each of the 6 groupings: 
-e_list <- c("pop_1", "pop_5", "pop_8", "pop_18", "pop_7", "pop_11", "pop_13", "pop_15", "pop_16")
-e_NS_list <- c("pop_1", "pop_5", "pop_8", "pop_18", "pop_7", "pop_11", "pop_13", "pop_15")
-o_list <- c("pop_2","pop_4","pop_9","pop_17","pop_3","pop_6","pop_10","pop_12","pop_14")
-o_NS_list <- c("pop_2","pop_4","pop_9","pop_17","pop_6","pop_10","pop_12","pop_14")
-e_na_list <- c("pop_7", "pop_11", "pop_13", "pop_15", "pop_16")
-e_na_NS_list <- c("pop_7", "pop_11", "pop_13", "pop_15")
-e_a_list <- c("pop_1","pop_5", "pop_8", "pop_18")
-o_na_list <- c("pop_3", "pop_6", "pop_10", "pop_12", "pop_14")
-o_na_NS_list <- c("pop_6", "pop_10", "pop_12", "pop_14")
-o_a_list <- c("pop_2", "pop_4","pop_9", "pop_17")
+e_list <- POP_INFO[POP_INFO$LINEAGE=="Even",]
+o_list<- POP_INFO[POP_INFO$LINEAGE=="Odd",]
+e_na_list<- POP_INFO[(POP_INFO$LINEAGE=="Even") & (POP_INFO$CONTINENT=="North_America"),]
+e_a_list <- POP_INFO[(POP_INFO$LINEAGE=="Even") & (POP_INFO$CONTINENT=="Asia"),]
+o_na_list<- POP_INFO[(POP_INFO$LINEAGE=="Odd") & (POP_INFO$CONTINENT=="North_America"),]
+o_a_list <- POP_INFO[(POP_INFO$LINEAGE=="Odd") & (POP_INFO$CONTINENT=="Asia"),]
+
+e_NS_list <- POP_INFO[(POP_INFO$LINEAGE=="Even") & (POP_INFO$POPNAME !="SUSIT14"),]
+o_NS_list <- POP_INFO[(POP_INFO$LINEAGE=="Odd") & (POP_INFO$POPNAME !="SUSIT13"),]
+e_na_NS_list <- POP_INFO[(POP_INFO$LINEAGE=="Even") & (POP_INFO$CONTINENT=="North_America") & (POP_INFO$POPNAME !="SUSIT14"),]
+o_na_NS_list<- POP_INFO[(POP_INFO$LINEAGE=="Odd") & (POP_INFO$CONTINENT=="North_America") & (POP_INFO$POPNAME !="SUSIT13"),]
+
+na_all_list <- POP_INFO[POP_INFO$CONTINENT =="North_America",]
+na_NS_list <- POP_INFO[(POP_INFO$CONTINENT =="North_America") & (POP_INFO$POPNAME !="SUSIT13" & POP_INFO$POPNAME !="SUSIT14" ),]
+a_all_list <- POP_INFO[POP_INFO$CONTINENT =="Asia",]
 
 
 #Subset the list of all the populations and individuals by the 6 groups based on population
-Even_inds <- PLINK_PED[PLINK_PED$Pop%in%e_list,]
-Odd_inds <- PLINK_PED[PLINK_PED$Pop%in%o_list,]
-Even_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%e_NS_list,]
-Odd_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%o_NS_list,]
+Even_inds <- PLINK_PED[PLINK_PED$Pop%in%e_list$POP,]
+Odd_inds <- PLINK_PED[PLINK_PED$Pop%in%o_list$POP,]
+Even_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%e_NS_list$POP,]
+Odd_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%o_NS_list$POP,]
 
-e_na_inds <- PLINK_PED[PLINK_PED$Pop%in%e_na_list,]
-e_na_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%e_na_NS_list,]
-e_a_inds <- PLINK_PED[PLINK_PED$Pop%in%e_a_list,]
+e_na_inds <- PLINK_PED[PLINK_PED$Pop%in%e_na_list$POP,]
+e_na_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%e_na_NS_list$POP,]
+e_a_inds <- PLINK_PED[PLINK_PED$Pop%in%e_a_list$POP,]
 
-o_na_inds <- PLINK_PED[PLINK_PED$Pop%in%o_na_list,]
-o_na_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%o_na_NS_list,]
-o_a_inds <- PLINK_PED[PLINK_PED$Pop%in%o_a_list,]
+o_na_inds <- PLINK_PED[PLINK_PED$Pop%in%o_na_list$POP,]
+o_na_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%o_na_NS_list$POP,]
+o_a_inds <- PLINK_PED[PLINK_PED$Pop%in%o_a_list$POP,]
+
+na_all_inds<- PLINK_PED[PLINK_PED$Pop%in%na_all_list$POP,]
+na_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%na_NS_list$POP,]
+a_all_inds <- PLINK_PED[PLINK_PED$Pop%in%a_all_list$POP,]
+
+####Write The lists of the individuals in each population group to a file
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Even_inds_all.txt", "wb")
+write.table(Even_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Odd_inds_all.txt", "wb")
+write.table(Odd_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Even_inds_NS.txt", "wb")
+write.table(Even_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Odd_inds_NS.txt", "wb")
+write.table(Odd_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/e_na_inds_all.txt", "wb")
+write.table(e_na_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/e_a_inds.txt", "wb")
+write.table(e_a_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/o_na_inds_all.txt", "wb")
+write.table(o_na_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/o_a_inds.txt", "wb")
+write.table(o_a_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/e_na_inds_NS.txt", "wb")
+write.table(e_na_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/o_na_inds_NS.txt", "wb")
+write.table(o_na_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/na_all_inds.txt", "wb")
+write.table(na_all_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/na_NS_inds.txt", "wb")
+write.table(na_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/a_all_inds.txt", "wb")
+write.table(a_all_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
 
 
-# ####Write The lists of the individuals in each population group to a file
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Even_inds_all.txt", "wb")
-# write.table(Even_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Odd_inds_all.txt", "wb")
-# write.table(Odd_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Even_inds_NS.txt", "wb")
-# write.table(Even_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Odd_inds_NS.txt", "wb")
-# write.table(Odd_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/e_na_inds_all.txt", "wb")
-# write.table(e_na_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/e_a_inds.txt", "wb")
-# write.table(e_a_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/o_na_inds_all.txt", "wb")
-# write.table(o_na_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/o_a_inds.txt", "wb")
-# write.table(o_a_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/e_na_inds_NS.txt", "wb")
-# write.table(e_na_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
-# 
-# outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/o_na_inds_NS.txt", "wb")
-# write.table(o_na_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
-# close(outputFile)
 
 #Plot the difference in the population group numbers 
 #summary of all the individuals by population
