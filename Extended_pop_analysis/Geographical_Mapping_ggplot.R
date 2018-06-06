@@ -13,31 +13,76 @@ library(viridis)
 library(ggplot2)
 library(pals)
 library(grid)
-
+#install.packages("pals")
 # Get the world polygon and extract USA and Canada
+world <- map_data("world2")
 
-USA <- map_data("world") %>% 
+word_data <- data.frame(world)
+head(word_data)
+regions <- unique(word_data$region)
+
+USA <- map_data("world2") %>% 
   filter(region=="USA")
 
-Canada <- map_data("world") %>% 
+Canada <- map_data("world2") %>% 
   filter(region=="Canada")
-gc()
+
+Russia <- map_data("world2")%>% 
+  filter(region=="Russia")
+
+Japan <- map_data("world2")%>% 
+  filter(region=="Japan")
+
+China<- map_data("world2")%>% 
+  filter(region=="China")
+
 
 # Read in your data frame with longitude, latitude, and other metadata.
-my_data <- read.delim("MAPPING_Herring_PopulationStructure_SamplingLocations.txt")
-head(my_data)
+full_set <- read.delim("Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAPPING_popinfo.txt")
+head(full_set)
 
-# subset the data to get WA samples only
-WA_data <- my_data[my_data$Region=="Washington",]
+#split each of the sets of data into one copy of the info per location- here just used the odd
+my_data <- full_set[full_set$LINEAGE=="Odd",]
+dim(my_data)
 
-# subset the data to get BC samples only
-BC_data <- my_data[my_data$Region=="British Columbia",]
+# subset the split set of data to get NA samples only
+NA_data <- my_data[my_data$CONTINENT=="North America",]
+dim(NA_data)
+
+# subset the  split set of data to get Asia samples only
+ASIA_data <- my_data[my_data$CONTINENT=="Asia",]
+dim(ASIA_data )
+
+# subset the  split set of data to get OG samples only
+OG_data <- my_data[(my_data$Location != "Hecate Strait") & (my_data$Location !=  "Cook Inlet"),] 
+dim(OG_data)
 
 
 
 ########################################################################################################
+# THIS IS THE FUNCTION TO CONVERT YOUR LONGITUDES TO WORK WITH MAPS PACKAGE
+#The code in the chunk below was written by rmendles: https://rdrr.io/github/rmendels/rerddapXtracto/src/R/make360.R
+
+#' Convert Longitudes to (0,360)
+# {make360} is an internal function that converts a vector of longitudes
+#' from (-180,180) to (0,360)
+#'
+#' @param lon A vector of longitudes
+#' @return A vector of longitudes all mapped to (0,360)
+#'
+
+
+make360 <- function(lon) {
+  
+  ind <- which(lon < 0)
+  lon[ind] <- lon[ind] + 360
+  
+  return(lon)
+}
+
+########################################################################################################
 # THESE ARE THE FUNCTIONS YOU NEED TO MAKE THE SCALE BAR
-#The code in the chunk below was written by Ewen Gallic (bless his heart for being so sharing).
+#The code in the chunk below was written by Ewen Gallic (bless him for being so sharing).
 
 # Result #
 #--------#
@@ -171,35 +216,120 @@ scale_bar <- function(lon, lat, distance_lon, distance_lat, distance_legend, dis
 # MAKE SOME PLOTS!!!!
 
 # set the breaks for your color ramp
-mybreaks=c(0, 30, 60, 90, 120, 150, 180)
+#mybreaks=c(0, 30, 60, 90, 120, 150, 180)
 
+#Convert the longitudes to (0,360)
 
-# Make the first map
-#tiff(file = "Map_coastline.tiff", width = 36, height = 27, units = "cm", res = 600, compression="lzw") 
+my_data_long <- my_data$Longitude
+my_data$Long_360 <- make360(my_data_long)
+head(my_data)
 
+NA_data_long<- NA_data$Longitude
+NA_data$Long_360 <- make360(NA_data_long)
+head(NA_data)
+
+ASIA_data_long<- ASIA_data$Longitude
+ASIA_data$Long_360 <- make360(ASIA_data_long)
+head(ASIA_data)
+
+OG_data_long<- OG_data$Longitude
+OG_data$Long_360 <- make360(OG_data_long)
+head(OG_data)
+
+# Make the first map of ALL the populations 
+#tiff(file = "Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAP_allPops-black.tiff", width = 36, height = 27, units = "cm", res = 600, compression="lzw") 
 
 ggplot() +
-  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
-  geom_polygon(data = Canada, aes(x=long, y = lat, group = group), fill=" grey17", alpha=0.3)+
-  geom_point(data=my_data, aes(x=longitude, y=latitude, color= days), size = 5, alpha = 0.7) +
+  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
+  geom_polygon(data = Canada, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
+  geom_polygon(data = Russia, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3)+
+  geom_polygon(data = Japan, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
+  geom_polygon(data = China, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
+  geom_point(data=my_data, aes(x=Long_360, y=Latitude), size = 4, alpha = 0.8, color = "black" ) +
   theme(panel.background = element_rect(fill = "aliceblue"), 
         panel.grid.major = element_line(colour = NA), 
         axis.text=element_text(size=12),
         axis.title =element_text(size=14),
         legend.title=element_text(size=12),
-        legend.text=element_text(size=12)) + 
-  scale_color_viridis(option="plasma", 
-                      name="Date of sampling\n(Julian day)\n", 
-                      breaks = mybreaks) + 
-  coord_map(xlim= c(-119, -139),  ylim = c(46,60)) +
+        legend.text=element_text(size=12)) + scale_x_continuous(labels= c("140°E", "160°E", "180°", "160°W", "140°W", "120°W")) +
+  scale_y_continuous(labels= c("40°N", "45°N", "50°N", "55°N", "60°N", "65°N")) +
   labs(x = "Longitude", y = "Latitude") +
-  geom_text_repel( data= my_data, aes(x=longitude, y=latitude, label=code), size=4) +
-  scale_bar(lon = -136, lat = 47.3, 
-            distance_lon = 100, distance_lat = 15, distance_legend = 40, 
-            dist_unit = "km", orientation = FALSE)
+  coord_map(xlim= c(135, 245),  ylim = c(39,66)) +
+  geom_text_repel(data= my_data, aes(x=Long_360, y=Latitude, label = Location), size=4, box.padding= 0.5, segment.colour = NA) 
+
+#dev.off()
+gc()
+
+# Make a map of the OG populations 
+#tiff(file = "Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAP_OG_Pops-black.tiff", width = 36, height = 27, units = "cm", res = 600, compression="lzw") 
+
+ggplot() +
+  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
+  geom_polygon(data = Canada, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
+  geom_polygon(data = Russia, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3)+
+  geom_polygon(data = Japan, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
+  geom_polygon(data = China, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
+  geom_point(data=OG_data, aes(x=Long_360, y=Latitude), size = 4, alpha = 0.8, color = "black" ) +
+  theme(panel.background = element_rect(fill = "aliceblue"), 
+        panel.grid.major = element_line(colour = NA), 
+        axis.text=element_text(size=12),
+        axis.title =element_text(size=14),
+        legend.title=element_text(size=12),
+        legend.text=element_text(size=12)) + scale_x_continuous(labels= c("140°E", "160°E", "180°", "160°W", "140°W", "120°W")) +
+  scale_y_continuous(labels= c("40°N", "45°N", "50°N", "55°N", "60°N", "65°N")) +
+  labs(x = "Longitude", y = "Latitude") +
+  coord_map(xlim= c(135, 245),  ylim = c(39,66)) +
+  geom_text_repel(data= OG_data, aes(x=Long_360, y=Latitude, label = Location), size=4, box.padding= 0.5, segment.colour = NA) 
 
 #dev.off()
 
+
+# Make a map of just the NA populations 
+#tiff(file = "Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAP_NA_Pops-black.tiff", width = 36, height = 27, units = "cm", res = 600, compression="lzw") 
+
+ggplot() +
+  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
+  geom_polygon(data = Canada, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
+  geom_point(data=NA_data, aes(x=Long_360, y=Latitude), size = 4, alpha = 0.8, color = "black" ) +
+  theme(panel.background = element_rect(fill = "aliceblue"), 
+        panel.grid.major = element_line(colour = NA), 
+        axis.text=element_text(size=12),
+        axis.title =element_text(size=14),
+        legend.title=element_text(size=12),
+        legend.text=element_text(size=12)) + scale_x_continuous(labels= c("180°","160°W", "140°W", "120°W")) +
+  scale_y_continuous(labels= c( "45°N", "50°N", "55°N", "60°N", "65°N")) +
+  labs(x = "Longitude", y = "Latitude") +
+  coord_map(xlim= c(180, 245),  ylim = c(45,66)) +
+  geom_text_repel(data= NA_data, aes(x=Long_360, y=Latitude, label = Location), size=4, box.padding= 0.5, segment.colour = NA) 
+
+#dev.off()
+
+# Make a map of just the ASIA populations 
+#tiff(file = "Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAP_Asian_Pops-black.tiff", width = 36, height = 27, units = "cm", res = 600, compression="lzw") 
+
+ggplot() +
+  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
+  geom_polygon(data = Russia, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3)+
+  geom_polygon(data = Japan, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
+  geom_polygon(data = China, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
+  geom_point(data=ASIA_data, aes(x=Long_360, y=Latitude), size = 4, alpha = 0.8, color = "black" ) +
+  theme(panel.background = element_rect(fill = "aliceblue"), 
+        panel.grid.major = element_line(colour = NA), 
+        axis.text=element_text(size=12),
+        axis.title =element_text(size=14),
+        legend.title=element_text(size=12),
+        legend.text=element_text(size=12)) + scale_x_continuous(labels= c("140°E", "160°E", "180°", "160°W")) +
+  scale_y_continuous(labels= c( "40°N","45°N", "50°N", "55°N", "60°N", "65°N")) +
+  labs(x = "Longitude", y = "Latitude") +
+  coord_map(xlim= c(135, 200),  ylim = c(39,66)) +
+  geom_text_repel(data= ASIA_data, aes(x=Long_360, y=Latitude, label = Location), size=4, box.padding= 0.5, segment.colour = NA) 
+
+#dev.off()
+
+
+
+
+############################################# THESE ARE ELENI's EXAMPLES BELOW
 
 # Make a little map of WA samples
 
