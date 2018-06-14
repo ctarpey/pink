@@ -23,7 +23,8 @@ OG_80PCfiltered[1:5,1:5]
 dim(OG_80PCfiltered)
 
 
-
+##Show the colors used for a default palette of 18
+show_col(hue_pal()(18))
 
 #colors
 Histo_14_colors<- c("#6e016b","#6e016b","#88419d","#88419d","#8c6bb1","#8c6bb1","#8c96c6","#8c96c6","#7bccc4","#7bccc4",'#4eb3d3','#4eb3d3','#2b8cbe','#2b8cbe')

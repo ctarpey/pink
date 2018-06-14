@@ -22,16 +22,19 @@ library(grid)
 library(RColorBrewer)
 
 #load the txt file that has the pops and the individuals in each: 
-PLINK_PED <-read.delim("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/PLINK_23759_465_POP_INDS.txt",sep="", header = FALSE)
-colnames(PLINK_PED)<- c("Pop", "Inds")
+PLINK_PED <-read.delim("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK_PED.txt",sep="", header = FALSE)
+colnames(PLINK_PED)<- c("POP", "Names")
 head(PLINK_PED)
 
-POP_INFO <-read.delim("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/PlottingLD_pop_info.txt",sep="", header =TRUE)
+POP_INFO <-read.delim("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/POPINFO_LS.txt", header =TRUE)
 head(POP_INFO)
+dim(POP_INFO)
 
+##### Lists of the populations in each of the groupings: 
+#one for the old pops, as QC
+og_list <- POP_INFO[(POP_INFO$TRUENAME !="SUSIT14") & (POP_INFO$TRUENAME !="SUSIT13")& (POP_INFO$TRUENAME !="LAKEL06") & (POP_INFO$TRUENAME !="LAKEL07"),]
 
-
-##### Lists of the populations in each of the 6 groupings: 
+#new pops
 e_list <- POP_INFO[POP_INFO$LINEAGE=="Even",]
 o_list<- POP_INFO[POP_INFO$LINEAGE=="Odd",]
 e_na_list<- POP_INFO[(POP_INFO$LINEAGE=="Even") & (POP_INFO$CONTINENT=="North_America"),]
@@ -39,33 +42,48 @@ e_a_list <- POP_INFO[(POP_INFO$LINEAGE=="Even") & (POP_INFO$CONTINENT=="Asia"),]
 o_na_list<- POP_INFO[(POP_INFO$LINEAGE=="Odd") & (POP_INFO$CONTINENT=="North_America"),]
 o_a_list <- POP_INFO[(POP_INFO$LINEAGE=="Odd") & (POP_INFO$CONTINENT=="Asia"),]
 
-e_NS_list <- POP_INFO[(POP_INFO$LINEAGE=="Even") & (POP_INFO$POPNAME !="SUSIT14"),]
-o_NS_list <- POP_INFO[(POP_INFO$LINEAGE=="Odd") & (POP_INFO$POPNAME !="SUSIT13"),]
-e_na_NS_list <- POP_INFO[(POP_INFO$LINEAGE=="Even") & (POP_INFO$CONTINENT=="North_America") & (POP_INFO$POPNAME !="SUSIT14"),]
-o_na_NS_list<- POP_INFO[(POP_INFO$LINEAGE=="Odd") & (POP_INFO$CONTINENT=="North_America") & (POP_INFO$POPNAME !="SUSIT13"),]
+e_NS_list <- POP_INFO[(POP_INFO$LINEAGE=="Even") & (POP_INFO$TRUENAME !="SUSIT14"),]
+o_NS_list <- POP_INFO[(POP_INFO$LINEAGE=="Odd") & (POP_INFO$TRUENAME !="SUSIT13"),]
+e_na_NS_list <- POP_INFO[(POP_INFO$LINEAGE=="Even") & (POP_INFO$CONTINENT=="North_America") & (POP_INFO$TRUENAME !="SUSIT14"),]
+o_na_NS_list<- POP_INFO[(POP_INFO$LINEAGE=="Odd") & (POP_INFO$CONTINENT=="North_America") & (POP_INFO$TRUENAME !="SUSIT13"),]
 
 na_all_list <- POP_INFO[POP_INFO$CONTINENT =="North_America",]
-na_NS_list <- POP_INFO[(POP_INFO$CONTINENT =="North_America") & (POP_INFO$POPNAME !="SUSIT13" & POP_INFO$POPNAME !="SUSIT14" ),]
+na_NS_list <- POP_INFO[(POP_INFO$CONTINENT =="North_America") & (POP_INFO$TRUENAME !="SUSIT13" & POP_INFO$TRUENAME !="SUSIT14" ),]
 a_all_list <- POP_INFO[POP_INFO$CONTINENT =="Asia",]
 
+e_na_nome_list<- POP_INFO[((POP_INFO$LINEAGE=="Even") & (POP_INFO$CONTINENT=="North_America")) | (POP_INFO$TRUENAME=="NOME94"),]
+o_na_nome_list<- POP_INFO[((POP_INFO$LINEAGE=="Odd") & (POP_INFO$CONTINENT=="North_America")) | (POP_INFO$TRUENAME=="NOME91"),]
+na_nome_list <- POP_INFO[(POP_INFO$CONTINENT =="North_America" )| (POP_INFO$TRUENAME=="NOME94")| (POP_INFO$TRUENAME=="NOME91"),]
 
-#Subset the list of all the populations and individuals by the 6 groups based on population
-Even_inds <- PLINK_PED[PLINK_PED$Pop%in%e_list$POP,]
-Odd_inds <- PLINK_PED[PLINK_PED$Pop%in%o_list$POP,]
-Even_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%e_NS_list$POP,]
-Odd_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%o_NS_list$POP,]
+na_nome_NS_list <- POP_INFO[(POP_INFO$CONTINENT =="North_America" & POP_INFO$TRUENAME !="SUSIT13" & POP_INFO$TRUENAME !="SUSIT14" ) | (POP_INFO$TRUENAME=="NOME94")| (POP_INFO$TRUENAME=="NOME91"),]
 
-e_na_inds <- PLINK_PED[PLINK_PED$Pop%in%e_na_list$POP,]
-e_na_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%e_na_NS_list$POP,]
-e_a_inds <- PLINK_PED[PLINK_PED$Pop%in%e_a_list$POP,]
 
-o_na_inds <- PLINK_PED[PLINK_PED$Pop%in%o_na_list$POP,]
-o_na_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%o_na_NS_list$POP,]
-o_a_inds <- PLINK_PED[PLINK_PED$Pop%in%o_a_list$POP,]
+#Subset the list of all the populations and individuals by the groups based on population
+og_inds <- PLINK_PED[PLINK_PED$POP%in%og_list$POP,]
 
-na_all_inds<- PLINK_PED[PLINK_PED$Pop%in%na_all_list$POP,]
-na_NS_inds <- PLINK_PED[PLINK_PED$Pop%in%na_NS_list$POP,]
-a_all_inds <- PLINK_PED[PLINK_PED$Pop%in%a_all_list$POP,]
+Even_inds <- PLINK_PED[PLINK_PED$POP%in%e_list$POP,]
+Odd_inds <- PLINK_PED[PLINK_PED$POP%in%o_list$POP,]
+Even_NS_inds <- PLINK_PED[PLINK_PED$POP%in%e_NS_list$POP,]
+Odd_NS_inds <- PLINK_PED[PLINK_PED$POP%in%o_NS_list$POP,]
+
+e_na_inds <- PLINK_PED[PLINK_PED$POP%in%e_na_list$POP,]
+e_na_NS_inds <- PLINK_PED[PLINK_PED$POP%in%e_na_NS_list$POP,]
+e_a_inds <- PLINK_PED[PLINK_PED$POP%in%e_a_list$POP,]
+
+o_na_inds <- PLINK_PED[PLINK_PED$POP%in%o_na_list$POP,]
+o_na_NS_inds <- PLINK_PED[PLINK_PED$POP%in%o_na_NS_list$POP,]
+o_a_inds <- PLINK_PED[PLINK_PED$POP%in%o_a_list$POP,]
+
+na_all_inds <- PLINK_PED[PLINK_PED$POP%in%na_all_list$POP,]
+na_NS_inds <- PLINK_PED[PLINK_PED$POP%in%na_NS_list$POP,]
+a_all_inds <- PLINK_PED[PLINK_PED$POP%in%a_all_list$POP,]
+
+e_na_nome_inds <- PLINK_PED[PLINK_PED$POP%in%e_na_nome_list$POP,]
+o_na_nome_inds <- PLINK_PED[PLINK_PED$POP%in%o_na_nome_list$POP,]
+na_nome_inds <- PLINK_PED[PLINK_PED$POP%in%na_nome_list$POP,]
+
+na_nome_NS_inds<- PLINK_PED[PLINK_PED$POP%in%na_nome_NS_list$POP,]
+
 
 ####Write The lists of the individuals in each population group to a file
 outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Even_inds_all.txt", "wb")
@@ -120,6 +138,25 @@ outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/a_a
 write.table(a_all_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
 close(outputFile)
 
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/e_na_nome_inds.txt", "wb")
+write.table(e_na_nome_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/o_na_nome_inds.txt", "wb")
+write.table(o_na_nome_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/na_nome_inds.txt", "wb")
+write.table(na_nome_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/og_inds.txt", "wb")
+write.table(og_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
+
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/na_nome_NS_inds.txt", "wb")
+write.table(na_nome_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
 
 
 #Plot the difference in the population group numbers 
@@ -190,9 +227,9 @@ ggplot(data=Summary_Ped, aes(Summary_Ped$Plotting, Summary_Ped$Ind_counts)) + th
 
 #plot of all the individuals by their populations
 ggplot(data=POP_counts, aes(POP_counts$LINEAGE, POP_counts$Ind_counts)) + theme_bw() +
-  geom_bar(aes(fill= POP_counts$POP), stat="identity", position="dodge", alpha= .75) + theme(legend.position="none") +
+  geom_bar(aes(fill= POP_counts$TRUENAME), stat="identity", position="dodge", alpha= .75) + theme(legend.position="none") +
   xlab("Population") + ylab("Count of Individuals") + ggtitle("Number of Individuals per Population") +
   scale_fill_manual(values = Histo_18_colors) + geom_text(aes(x = POP_counts$LINEAGE, y = POP_counts$Ind_counts, 
-          label = POP_counts$POPNAME, group = POP_counts$POP),position = position_dodge(width = .9), vjust = -0.5, size = 2)
+          label = POP_counts$TRUENAME, group = POP_counts$TRUENAME), position = position_dodge(width = .9), vjust = -.5, size = 2)
 
 dev.off()

@@ -38,7 +38,7 @@ China<- map_data("world2")%>%
 
 
 # Read in your data frame with longitude, latitude, and other metadata.
-full_set <- read.delim("Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAPPING_popinfo.txt")
+full_set <- read.delim("Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAPPING_popinfo_LS.txt")
 head(full_set)
 
 #split each of the sets of data into one copy of the info per location- here just used the odd
@@ -50,11 +50,11 @@ NA_data <- my_data[my_data$CONTINENT=="North America",]
 dim(NA_data)
 
 # subset the  split set of data to get Asia samples only
-ASIA_data <- my_data[my_data$CONTINENT=="Asia",]
+ASIA_data <- my_data[(my_data$CONTINENT=="Asia") | (my_data$Location=="Norton Sound") ,]
 dim(ASIA_data )
 
 # subset the  split set of data to get OG samples only
-OG_data <- my_data[(my_data$Location != "Hecate Strait") & (my_data$Location !=  "Cook Inlet"),] 
+OG_data <- my_data[(my_data$Location != "Skeena") & (my_data$Location !=  "Cook Inlet"),] 
 dim(OG_data)
 
 
@@ -240,13 +240,13 @@ head(OG_data)
 #tiff(file = "Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAP_allPops-black.tiff", width = 36, height = 27, units = "cm", res = 600, compression="lzw") 
 
 ggplot() +
-  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
-  geom_polygon(data = Canada, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
-  geom_polygon(data = Russia, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3)+
-  geom_polygon(data = Japan, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
-  geom_polygon(data = China, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
+  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey17", alpha=0.15) +
+  geom_polygon(data = Canada, aes(x=long, y = lat, group = group), fill=" grey17", alpha=0.15) +
+  geom_polygon(data = Russia, aes(x=long, y = lat, group = group), fill=" grey17", alpha=0.15)+
+  geom_polygon(data = Japan, aes(x=long, y = lat, group = group), fill="grey17", alpha=0.15) +
+  geom_polygon(data = China, aes(x=long, y = lat, group = group), fill=" grey17", alpha=0.15) +
   geom_point(data=my_data, aes(x=Long_360, y=Latitude), size = 4, alpha = 0.8, color = "black" ) +
-  theme(panel.background = element_rect(fill = "aliceblue"), 
+  theme(panel.background = element_rect(fill = "white"), 
         panel.grid.major = element_line(colour = NA), 
         axis.text=element_text(size=12),
         axis.title =element_text(size=14),
@@ -264,13 +264,13 @@ gc()
 #tiff(file = "Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAP_OG_Pops-black.tiff", width = 36, height = 27, units = "cm", res = 600, compression="lzw") 
 
 ggplot() +
-  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
-  geom_polygon(data = Canada, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
-  geom_polygon(data = Russia, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3)+
-  geom_polygon(data = Japan, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
-  geom_polygon(data = China, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
+  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey17", alpha=0.15) +
+  geom_polygon(data = Canada, aes(x=long, y = lat, group = group), fill=" grey17", alpha=0.15) +
+  geom_polygon(data = Russia, aes(x=long, y = lat, group = group), fill=" grey17", alpha=0.15)+
+  geom_polygon(data = Japan, aes(x=long, y = lat, group = group), fill="grey17", alpha=0.15) +
+  geom_polygon(data = China, aes(x=long, y = lat, group = group), fill=" grey17", alpha=0.15) +
   geom_point(data=OG_data, aes(x=Long_360, y=Latitude), size = 4, alpha = 0.8, color = "black" ) +
-  theme(panel.background = element_rect(fill = "aliceblue"), 
+  theme(panel.background = element_rect(fill = "white"), 
         panel.grid.major = element_line(colour = NA), 
         axis.text=element_text(size=12),
         axis.title =element_text(size=14),
@@ -288,18 +288,18 @@ ggplot() +
 #tiff(file = "Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAP_NA_Pops-black.tiff", width = 36, height = 27, units = "cm", res = 600, compression="lzw") 
 
 ggplot() +
-  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
-  geom_polygon(data = Canada, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
+  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey17", alpha=0.15) +
+  geom_polygon(data = Canada, aes(x=long, y = lat, group = group), fill=" grey17", alpha=0.15) +
   geom_point(data=NA_data, aes(x=Long_360, y=Latitude), size = 4, alpha = 0.8, color = "black" ) +
-  theme(panel.background = element_rect(fill = "aliceblue"), 
+  theme(panel.background = element_rect(fill = "white"), 
         panel.grid.major = element_line(colour = NA), 
         axis.text=element_text(size=12),
         axis.title =element_text(size=14),
         legend.title=element_text(size=12),
-        legend.text=element_text(size=12)) + scale_x_continuous(labels= c("180°","160°W", "140°W", "120°W")) +
+        legend.text=element_text(size=12)) + scale_x_continuous(labels= c("170°W","160°W", "150°W", "140°W","130°W", "120°W")) +
   scale_y_continuous(labels= c( "45°N", "50°N", "55°N", "60°N", "65°N")) +
   labs(x = "Longitude", y = "Latitude") +
-  coord_map(xlim= c(180, 245),  ylim = c(45,66)) +
+  coord_map(xlim= c(190, 243),  ylim = c(45,66)) +
   geom_text_repel(data= NA_data, aes(x=Long_360, y=Latitude, label = Location), size=4, box.padding= 0.5, segment.colour = NA) 
 
 #dev.off()
@@ -308,12 +308,12 @@ ggplot() +
 #tiff(file = "Z:/WORK/TARPEY/Exp_Pink_Pops/GeoMaps/MAP_Asian_Pops-black.tiff", width = 36, height = 27, units = "cm", res = 600, compression="lzw") 
 
 ggplot() +
-  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
-  geom_polygon(data = Russia, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3)+
-  geom_polygon(data = Japan, aes(x=long, y = lat, group = group), fill="grey37", alpha=0.3) +
-  geom_polygon(data = China, aes(x=long, y = lat, group = group), fill=" grey37", alpha=0.3) +
+  geom_polygon(data = USA, aes(x=long, y = lat, group = group), fill="grey17", alpha=0.15) +
+  geom_polygon(data = Russia, aes(x=long, y = lat, group = group), fill=" grey17", alpha=0.15)+
+  geom_polygon(data = Japan, aes(x=long, y = lat, group = group), fill="grey17", alpha=0.15) +
+  geom_polygon(data = China, aes(x=long, y = lat, group = group), fill=" grey17", alpha=0.15) +
   geom_point(data=ASIA_data, aes(x=Long_360, y=Latitude), size = 4, alpha = 0.8, color = "black" ) +
-  theme(panel.background = element_rect(fill = "aliceblue"), 
+  theme(panel.background = element_rect(fill = "white"), 
         panel.grid.major = element_line(colour = NA), 
         axis.text=element_text(size=12),
         axis.title =element_text(size=14),

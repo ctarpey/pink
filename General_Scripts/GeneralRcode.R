@@ -109,6 +109,9 @@ Even_inds<-popMapLineages[popMapLineages$Lineage=="Even",]
 Odd_matrix <-cbind(Odd_tags, Odd_SNPs_InRange)
 colnames(Odd_matrix) <- c("Tags","SNPs_InRange")
 
+#subset a data table
+sub <- subset(DT, a == 'a')
+tempGeno<-subset(Genepop, TRUENAME == tempPop)
 
 ##apply and Functions
 locusGenoRate<-apply(allGenos,2,function(x) 1-(sum(x=="0000")/dim(allGenos)[1]))
@@ -128,6 +131,8 @@ p(LD_data_a_all_sort)
 
 
 #<----------------------------------------PLOTTING
+##Show the colors used for a default palette of 18
+show_col(hue_pal()(18))
 
 ###@@@@@@@@@@@@@@@@@@@@@@Plots for the Manuscript, have labels as Principal components
 ALL_col<- c("#cd5490","#cd5490","#c9cf4a","#c9cf4a","#7297ee","#7297ee","#61005e","#61005e", "#677f3e","#677f3e","#00158a","#00158a","#e0957e","#e0957e")
