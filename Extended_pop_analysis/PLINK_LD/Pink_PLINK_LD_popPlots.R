@@ -56,7 +56,8 @@ o_na_nome_list<- POP_INFO[((POP_INFO$LINEAGE=="Odd") & (POP_INFO$CONTINENT=="Nor
 na_nome_list <- POP_INFO[(POP_INFO$CONTINENT =="North_America" )| (POP_INFO$TRUENAME=="NOME94")| (POP_INFO$TRUENAME=="NOME91"),]
 
 na_nome_NS_list <- POP_INFO[(POP_INFO$CONTINENT =="North_America" & POP_INFO$TRUENAME !="SUSIT13" & POP_INFO$TRUENAME !="SUSIT14" ) | (POP_INFO$TRUENAME=="NOME94")| (POP_INFO$TRUENAME=="NOME91"),]
-
+Asia_nome_susitna_list <- POP_INFO[(POP_INFO$CONTINENT =="Asia") | ( POP_INFO$TRUENAME =="SUSIT13") |( POP_INFO$TRUENAME =="SUSIT14" ),]
+dim(Asia_nome_susitna_list)
 
 #Subset the list of all the populations and individuals by the groups based on population
 og_inds <- PLINK_PED[PLINK_PED$POP%in%og_list$POP,]
@@ -83,7 +84,7 @@ o_na_nome_inds <- PLINK_PED[PLINK_PED$POP%in%o_na_nome_list$POP,]
 na_nome_inds <- PLINK_PED[PLINK_PED$POP%in%na_nome_list$POP,]
 
 na_nome_NS_inds<- PLINK_PED[PLINK_PED$POP%in%na_nome_NS_list$POP,]
-
+Asia_nome_susitna_inds<- PLINK_PED[PLINK_PED$POP%in%Asia_nome_susitna_list$POP,]
 
 ####Write The lists of the individuals in each population group to a file
 outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Even_inds_all.txt", "wb")
@@ -158,6 +159,9 @@ outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/na_
 write.table(na_nome_NS_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
 close(outputFile)
 
+outputFile <- file("Z:/WORK/TARPEY/Exp_Pink_Pops/Analysis/OneTagSNP/PLINK/LD/Asia_nome_susitna_inds.txt", "wb")
+write.table(Asia_nome_susitna_inds,outputFile,quote=FALSE,row.names=FALSE,col.names=FALSE,eol="\n")
+close(outputFile)
 
 #Plot the difference in the population group numbers 
 #summary of all the individuals by population
